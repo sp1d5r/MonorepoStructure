@@ -4,6 +4,7 @@ import { BackgroundBeamsWithCollision } from "../components/aceturnity/backgroun
 import { Button } from "../components/shadcn/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/shadcn/card";
 import { Badge } from "../components/shadcn/badge";
+import { AspectRatio } from "../components/shadcn/aspect-ratio";
 
 export const Landing: React.FC = () => {
   return (
@@ -48,10 +49,10 @@ export const Landing: React.FC = () => {
       </div>
 
       <h1 className="text-3xl font-bold mb-8 text-center">
-        Everything you need to understand<br />and optimize your application
+        Everything you need to understand and optimize your application
       </h1>
       
-      <div className="grid grid-cols-5 gap-4 mb-4 max-w-4xl mx-auto">
+      <div className="grid grid-cols-5 gap-4 mb-4 max-w-6xl mx-auto">
         <Card className="col-span-3 hover:border-blue-500 ease-in-out">
           <CardHeader>
             <CardTitle>Feature One</CardTitle>
@@ -100,7 +101,7 @@ export const Landing: React.FC = () => {
         </Card>
       </div>
 
-      <div className="grid grid-cols-5 gap-4 max-w-4xl mx-auto">
+      <div className="grid grid-cols-5 gap-4 max-w-6xl mx-auto">
         <div className="col-span-2 space-y-4">
           <Card className="hover:border-blue-500 ease-in-out">
             <CardHeader>
@@ -138,6 +139,46 @@ export const Landing: React.FC = () => {
             </div>
           </CardContent>
         </Card>
+      </div>
+
+      <div className="flex flex-col md:flex-row max-w-6xl mx-auto my-16 px-4">
+        <div className="w-full md:w-1/2 mb-8 md:mb-0">
+            <img 
+                src="https://placehold.co/400" 
+                alt="Description of the thing" 
+                className="w-full aspect-sqaure h-auto object-cover rounded-lg shadow-lg"
+            />
+        </div>
+        <div className="w-full md:w-1/2 md:pl-8 flex flex-col justify-center">
+            <p className="font-bold text-blue-500">FEATURE INFORMATION HERE</p>
+            <h2 className="text-3xl font-bold mb-4">Your Headline Here</h2>
+            <p className="text-lg mb-6">
+            Your description text goes here. Explain the key features or benefits 
+            related to the image on the left. Make it compelling and informative.
+            <br/>
+            <Button>Call to Action</Button>
+            </p>
+        </div>
+      </div>
+
+      <div className="flex flex-col md:flex-row max-w-6xl mx-auto my-16 px-4">
+        <div className="w-full md:w-1/2 md:pl-8 flex flex-col justify-center">
+            <p className="font-bold text-blue-500">FEATURE INFORMATION HERE</p>
+            <h2 className="text-3xl font-bold mb-4">Your Headline Here</h2>
+            <p className="text-lg mb-6">
+            Your description text goes here. Explain the key features or benefits 
+            related to the image on the left. Make it compelling and informative.
+            <br/>
+            <Button>Call to Action</Button>
+            </p>
+        </div>
+        <div className="w-full md:w-1/2 mb-8 md:mb-0">
+            <img 
+                src="https://placehold.co/400" 
+                alt="Description of the thing" 
+                className="w-full aspect-sqaure h-auto object-cover rounded-lg shadow-lg"
+            />
+        </div>
       </div>
     </ScrollableLayout>
   );
