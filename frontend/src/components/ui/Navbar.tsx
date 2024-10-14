@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from "../shadcn/button";
 import {
   DropdownMenu,
@@ -9,21 +10,27 @@ import {
 import { Menu } from 'lucide-react';
 
 export default function Navbar() {
+  const navigate = useNavigate();
+
+  const handleNavigation = (path: string) => {
+    navigate(path);
+  };
+
   return (
-    <nav className="bg-white shadow-sm">
+    <nav className="sticky top-0 bg-white shadow-sm z-50">
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
         <div className="flex items-center">
-          <span className="text-2xl font-bold text-blue-600">Startup Name</span>
+          <Link to="/" className="text-2xl font-bold text-blue-600">Startup Name</Link>
         </div>
         <div className="hidden md:flex space-x-4">
-          <Button variant="ghost">Home</Button>
-          <Button variant="ghost">Features</Button>
-          <Button variant="ghost">Pricing</Button>
-          <Button variant="ghost">Contact</Button>
+          <Button variant="ghost" asChild><Link to="/">Home</Link></Button>
+          <Button variant="ghost" asChild><Link to="/features">Features</Link></Button>
+          <Button variant="ghost" asChild><Link to="/pricing">Pricing</Link></Button>
+          <Button variant="ghost" asChild><Link to="/contact">Contact</Link></Button>
         </div>
         <div className="hidden md:flex space-x-2">
-          <Button variant="outline">Log in</Button>
-          <Button>Sign up</Button>
+          <Button variant="outline" asChild><Link to="/login">Log in</Link></Button>
+          <Button asChild><Link to="/signup">Sign up</Link></Button>
         </div>
         <div className="md:hidden">
           <DropdownMenu>
@@ -34,12 +41,12 @@ export default function Navbar() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem>Home</DropdownMenuItem>
-              <DropdownMenuItem>Features</DropdownMenuItem>
-              <DropdownMenuItem>Pricing</DropdownMenuItem>
-              <DropdownMenuItem>Contact</DropdownMenuItem>
-              <DropdownMenuItem>Log in</DropdownMenuItem>
-              <DropdownMenuItem>Sign up</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => handleNavigation('/')}>Home</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => handleNavigation('/features')}>Features</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => handleNavigation('/pricing')}>Pricing</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => handleNavigation('/contact')}>Contact</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => handleNavigation('/login')}>Log in</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => handleNavigation('/signup')}>Sign up</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
