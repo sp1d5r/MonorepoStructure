@@ -4,33 +4,33 @@ import { BackgroundBeamsWithCollision } from "../components/aceturnity/backgroun
 import { Button } from "../components/shadcn/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/shadcn/card";
 import { Badge } from "../components/shadcn/badge";
-import { AspectRatio } from "../components/shadcn/aspect-ratio";
 
 export const Landing: React.FC = () => {
   return (
     <ScrollableLayout>
-      <div className="relative flex flex-col justify-center items-center min-h-[80vh] ">
-      <BackgroundBeamsWithCollision className="absolute w-[100vw]">
+      <div className="flex flex-col gap-2">   
+      <div className="relative flex flex-col justify-start items-center min-h-[80vh] ">
+      <BackgroundBeamsWithCollision className="absolute w-[100vw] min-h-[80vh]">
           <div className="relative z-10 text-center px-4 py-16 max-w-4xl mx-auto">
-          <h2 className="text-2xl max-w-4xl relative z-20 md:text-4xl lg:text-7xl font-bold text-center text-black dark:text-white font-sans tracking-tight">
+          <h2 className="text-3xl max-w-4xl relative z-20 md:text-4xl lg:text-7xl font-bold text-center text-black dark:text-white font-sans tracking-tight">
             What&apos;s makes your startup{" "}
             <div className="relative mx-auto inline-block w-max [filter:drop-shadow(0px_1px_3px_rgba(27,_37,_80,_0.14))]">
-            <div className="absolute left-0 top-[1px] bg-clip-text bg-no-repeat text-transparent bg-gradient-to-r py-4 from-purple-500 via-violet-500 to-pink-500 [text-shadow:0_0_rgba(0,0,0,0.1)]">
-            <span className="">Extraordinary.</span>
+            <div className="absolute left-0 top-[1px] bg-clip-text bg-no-repeat text-transparent bg-gradient-to-r py-2 md:py-4 from-purple-500 via-violet-500 to-pink-500 [text-shadow:0_0_rgba(0,0,0,0.1)]">
+                <span className="">Extraordinary.</span>
             </div>
-            <div className="relative bg-clip-text text-transparent bg-no-repeat bg-gradient-to-r from-blue-500 via-violet-500 to-pink-500 py-4">
-            <span className="">Extraordinary.</span>
+            <div className="relative bg-clip-text text-transparent bg-no-repeat bg-gradient-to-r from-blue-500 via-violet-500 to-pink-500 py-2 md:py-4">
+                <span className="">Extraordinary.</span>
             </div>
             </div>
             </h2>
-            <p className="text-lg md:text-xl mb-8 ">
+            <p className="text-lg md:text-xl mb-8 dark:text-white">
               Give a brief description of what your startup does,
               and what makes it so special.
             </p>
-            <Button>
+            <Button className="dark:text-white">
               Start free today
             </Button>
-            <div className="mt-12 flex items-center justify-center">
+            <div className="mt-12 flex items-center justify-center dark:text-white">
               <div className="flex -space-x-2">
                 <img src="https://avatars.githubusercontent.com/u/38949593?v=4" alt="User" className="w-10 h-10 rounded-full border-2 border-white" />
                 <img src="https://avatars.githubusercontent.com/u/38949593?v=4" alt="User" className="w-10 h-10 rounded-full border-2 border-white" />
@@ -48,7 +48,7 @@ export const Landing: React.FC = () => {
         </BackgroundBeamsWithCollision>
       </div>
 
-      <h1 className="text-3xl font-bold mb-8 text-center">
+      <h1 className="text-2xl md:text-4xl font-bold mb-8 text-center dark:text-white my-4">
         Everything you need to understand and optimize your application
       </h1>
       
@@ -149,7 +149,7 @@ export const Landing: React.FC = () => {
                 className="w-full aspect-sqaure h-auto object-cover rounded-lg shadow-lg"
             />
         </div>
-        <div className="w-full md:w-1/2 md:pl-8 flex flex-col justify-center">
+        <div className="w-full md:w-1/2 md:pl-8 flex flex-col justify-center dark:text-white">
             <p className="font-bold text-blue-500">FEATURE INFORMATION HERE</p>
             <h2 className="text-3xl font-bold mb-4">Your Headline Here</h2>
             <p className="text-lg mb-6">
@@ -161,7 +161,7 @@ export const Landing: React.FC = () => {
         </div>
       </div>
 
-      <div className="flex flex-col md:flex-row max-w-6xl mx-auto my-16 px-4">
+      <div className="flex flex-col md:flex-row max-w-6xl mx-auto my-16 px-4 dark:text-white">
         <div className="w-full md:w-1/2 md:pl-8 flex flex-col justify-center">
             <p className="font-bold text-blue-500">FEATURE INFORMATION HERE</p>
             <h2 className="text-3xl font-bold mb-4">Your Headline Here</h2>
@@ -179,6 +179,22 @@ export const Landing: React.FC = () => {
                 className="w-full aspect-sqaure h-auto object-cover rounded-lg shadow-lg"
             />
         </div>
+      </div>
+
+      <div className="relative flex items-center justify-center my-50 min-h-[20vh]">
+        <div className="absolute w-[100vw] min-h-[20vh] bg-gray-800 flex flex-col justify-center items-center">
+            <h1 className="relative text-4xl font-bold m-0">
+                <div className="absolute left-0 top-[1px] bg-clip-text bg-no-repeat text-transparent bg-gradient-to-r py-2 from-purple-500 via-violet-500 to-pink-500 [text-shadow:0_0_rgba(0,0,0,0.1)]">
+                    <span className="">Join today</span>
+                </div>
+                <div className="relative bg-clip-text text-transparent bg-no-repeat bg-gradient-to-r from-blue-500 via-violet-500 to-pink-500 py-2">
+                    <span className="">Join today</span>
+                </div>
+            </h1>
+            <p className="text-white mb-1">Try today for free</p>
+            <Button variant="secondary">Sign up</Button>
+        </div>
+      </div>
       </div>
     </ScrollableLayout>
   );

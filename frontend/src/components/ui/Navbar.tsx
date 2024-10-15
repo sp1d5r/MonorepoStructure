@@ -7,46 +7,54 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../shadcn/dropdown-menu";
-import { Menu } from 'lucide-react';
+import { Menu, Moon, Sun } from 'lucide-react';
+import { useDarkMode } from '../../contexts/DarkModeProvider';
 
 export default function Navbar() {
   const navigate = useNavigate();
+  const {darkModeState, toggleDarkMode} = useDarkMode();
 
   const handleNavigation = (path: string) => {
     navigate(path);
   };
 
   return (
-    <nav className="sticky top-0 bg-white shadow-sm z-50">
+    <nav className="sticky top-0 bg-white dark:bg-gray-700 shadow-sm dark:shadow-gray-800 z-50">
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
         <div className="flex items-center">
-          <Link to="/" className="text-2xl font-bold text-blue-600">Startup Name</Link>
+          <Link to="/" className="text-2xl font-bold text-blue-600 dark:text-blue-400">Startup Name</Link>
         </div>
         <div className="hidden md:flex space-x-4">
-          <Button variant="ghost" asChild><Link to="/">Home</Link></Button>
-          <Button variant="ghost" asChild><Link to="/features">Features</Link></Button>
-          <Button variant="ghost" asChild><Link to="/pricing">Pricing</Link></Button>
-          <Button variant="ghost" asChild><Link to="/contact">Contact</Link></Button>
+          <Button variant="ghost" asChild><Link to="/" className="dark:text-gray-200">Home</Link></Button>
+          <Button variant="ghost" asChild><Link to="/features" className="dark:text-gray-200">Features</Link></Button>
+          <Button variant="ghost" asChild><Link to="/pricing" className="dark:text-gray-200">Pricing</Link></Button>
+          <Button variant="ghost" asChild><Link to="/contact" className="dark:text-gray-200">Contact</Link></Button>
         </div>
         <div className="hidden md:flex space-x-2">
-          <Button variant="outline" asChild><Link to="/login">Log in</Link></Button>
-          <Button asChild><Link to="/signup">Sign up</Link></Button>
+          <Button variant="outline" asChild><Link to="/authentication?mode=login" className="dark:text-gray-200 dark:hover:text-white">Log in</Link></Button>
+          <Button asChild><Link to="/authentication?mode=sign-up" className="dark:text-gray-200">Sign up</Link></Button>
+          <Button variant="outline" size="icon" onClick={toggleDarkMode} className="dark:border-gray-600 dark:text-gray-200 dark:hover:text-white dark:hover:border-gray-400">
+            {darkModeState ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+          </Button>
         </div>
         <div className="md:hidden">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="icon">
+              <Button variant="outline" size="icon" className="dark:border-gray-600 dark:text-gray-200 dark:hover:text-white dark:hover:border-gray-400">
                 <Menu className="h-5 w-5" />
                 <span className="sr-only">Toggle menu</span>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onSelect={() => handleNavigation('/')}>Home</DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => handleNavigation('/features')}>Features</DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => handleNavigation('/pricing')}>Pricing</DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => handleNavigation('/contact')}>Contact</DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => handleNavigation('/login')}>Log in</DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => handleNavigation('/signup')}>Sign up</DropdownMenuItem>
+            <DropdownMenuContent align="end" className="dark:bg-gray-800 dark:border-gray-700">
+              <DropdownMenuItem onSelect={() => handleNavigation('/')} className="dark:text-gray-200 dark:focus:bg-gray-700">Home</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => handleNavigation('/features')} className="dark:text-gray-200 dark:focus:bg-gray-700">Features</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => handleNavigation('/pricing')} className="dark:text-gray-200 dark:focus:bg-gray-700">Pricing</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => handleNavigation('/contact')} className="dark:text-gray-200 dark:focus:bg-gray-700">Contact</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => handleNavigation('/login')} className="dark:text-gray-200 dark:focus:bg-gray-700">Log in</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => handleNavigation('/signup')} className="dark:text-gray-200 dark:focus:bg-gray-700">Sign up</DropdownMenuItem>
+              <DropdownMenuItem onSelect={toggleDarkMode} className="dark:text-gray-200 dark:focus:bg-gray-700">
+                {darkModeState ? 'Light Mode' : 'Dark Mode'}
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
