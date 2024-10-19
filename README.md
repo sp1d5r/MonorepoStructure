@@ -46,7 +46,7 @@ mono-repo/
    ./installation-script.sh
    ```
 3. Set up your Firebase configuration
-    
+
 4. Start developing!
 
 ## Frontend
@@ -59,7 +59,8 @@ The backend is powered by Node.js and Express, written in TypeScript for improve
 
 ## Authentication
 
-Authentication is pre-setup and integrated with Firebase, providing a secure and scalable solution out of the box.
+Authentication is pre-setup and integrated with Firebase, providing a secure and scalable solution out of the box. All you need to do is add the environment secrets from firebase in the `.env` file in the frontend directory. 
+* Then 
 
 ## Firebase Integration
 

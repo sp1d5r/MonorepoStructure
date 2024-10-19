@@ -1,4 +1,4 @@
-import { User } from "../../types/User";
+import { User } from '../../types/User';
 export interface AuthService {
     login(email: string, password: string): Promise<User | null>;
     logout(): Promise<void>;

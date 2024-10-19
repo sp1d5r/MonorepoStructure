@@ -1,5 +1,7 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.FirebaseAuthService = void 0;
-var FirebaseAuthService_1 = require("./FirebaseAuthService");
-Object.defineProperty(exports, "FirebaseAuthService", { enumerable: true, get: function () { return FirebaseAuthService_1.default; } });
+const FirebaseAuthService_1 = __importDefault(require("./FirebaseAuthService"));
+exports.default = FirebaseAuthService_1.default;

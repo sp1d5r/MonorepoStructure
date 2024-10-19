@@ -8,9 +8,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const firestore_1 = require("firebase/firestore");
-const firebaseConfig_1 = require("../../../config/firebaseConfig");
+const firebaseConfig_1 = __importDefault(require("../../../config/firebaseConfig"));
 const db = (0, firestore_1.getFirestore)(firebaseConfig_1.default);
 const FirebaseDatabaseService = {
     addDocument(collectionPath, data, onSuccess, onFailure) {

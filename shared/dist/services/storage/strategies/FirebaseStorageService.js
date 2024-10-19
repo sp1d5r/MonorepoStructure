@@ -8,10 +8,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 // Assuming you have initialized Firebase in a similar manner
 const storage_1 = require("firebase/storage");
-const firebaseConfig_1 = require("../../../config/firebaseConfig");
+const firebaseConfig_1 = __importDefault(require("../../../config/firebaseConfig"));
 const storage = (0, storage_1.getStorage)(firebaseConfig_1.default);
 const FirebaseStorageService = {
     uploadFile(path, file, onProgress) {
@@ -24,12 +27,12 @@ const FirebaseStorageService = {
                     if (onProgress)
                         onProgress(progress);
                 }, (error) => {
-                    console.log("Failed to upload");
+                    console.log('Failed to upload');
                     reject(error);
                 }, () => {
                     // Handle successful uploads on complete
-                    (0, storage_1.getDownloadURL)(uploadTask.snapshot.ref).then(downloadURL => {
-                        console.log("Uploaded", downloadURL);
+                    (0, storage_1.getDownloadURL)(uploadTask.snapshot.ref).then((downloadURL) => {
+                        console.log('Uploaded', downloadURL);
                         resolve(downloadURL);
                         return downloadURL;
                     });
@@ -44,17 +47,15 @@ const FirebaseStorageService = {
             }
             const storageRef = (0, storage_1.ref)(storage, path);
             return (0, storage_1.getDownloadURL)(storageRef)
-                .then((url) => {
-                return fetch(url);
-            })
-                .then(response => {
+                .then((url) => fetch(url))
+                .then((response) => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok.');
                 }
                 return response.blob();
             })
                 .catch((error) => {
-                console.error("Failed to download file:", error);
+                console.error('Failed to download file:', error);
                 throw error;
             });
         });
@@ -67,11 +68,11 @@ const FirebaseStorageService = {
             const storageRef = (0, storage_1.ref)(storage, path);
             return (0, storage_1.getDownloadURL)(storageRef)
                 .then((downloadURL) => {
-                console.log("URL retrieved:", downloadURL);
+                console.log('URL retrieved:', downloadURL);
                 return downloadURL;
             })
                 .catch((error) => {
-                console.error("Error fetching download URL:", error);
+                console.error('Error fetching download URL:', error);
                 throw error;
             });
         });
@@ -79,8 +80,8 @@ const FirebaseStorageService = {
     deleteFile(path) {
         return __awaiter(this, void 0, void 0, function* () {
             const storageRef = (0, storage_1.ref)(storage, path);
-            (0, storage_1.deleteObject)(storageRef).then((res) => {
-                console.log("File deleted successfully");
+            (0, storage_1.deleteObject)(storageRef).then(() => {
+                console.log('File deleted successfully');
             }).catch((err) => {
                 console.log(`failed ${err}`);
             });

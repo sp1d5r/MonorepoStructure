@@ -23,6 +23,7 @@ import React, {
   
     useEffect(() => {
       const { darkMode } = darkModeState;
+
       if (darkMode) {
         document.documentElement.classList.add('dark');
         localStorage.setItem('darkMode', 'true');
