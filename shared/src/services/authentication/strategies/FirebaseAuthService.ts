@@ -1,5 +1,12 @@
 import {
-  getAuth, sendPasswordResetEmail, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, User as FirebaseUser, updateProfile,
+  getAuth,
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut,
+  User as FirebaseUser,
+  updateProfile,
 } from 'firebase/auth';
 import AuthService from '../AuthenticationInterface';
 import app from '../../../config/firebaseConfig';

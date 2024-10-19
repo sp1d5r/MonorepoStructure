@@ -46,6 +46,7 @@ mono-repo/
    ./installation-script.sh
    ```
 3. Set up your Firebase configuration
+    
 4. Start developing!
 
 ## Frontend
@@ -94,4 +95,4 @@ You may want to customize this further based on specific details of your project
 5. Information about your testing setup
 6. Any other unique features or integrations in your project
 
-Remember to keep this README updated as your project evolves. A well-maintained README is crucial for onboarding new developers and providing a quick overview of your project to potential users or contributors.
+A lot of the functionality is generic and introduces gaurd rails wherever appropriate but please do update and feel free to contribute to this mono-repo structure.

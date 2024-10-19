@@ -1,1 +1,3 @@
-export { default as FirebaseAuthService } from './FirebaseAuthService';
+import FirebaseAuthService from './FirebaseAuthService';
+
+export default FirebaseAuthService;
