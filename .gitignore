@@ -19,6 +19,12 @@
 /frontend/yarn-debug.log*
 /frontend/yarn-error.log*
 
+/shared/.env
+/shared/.env.local 
+/shared/.env.development.local
+/shared/.env.test.local
+/shared/.env.production.local
+
 .env
 
 @
