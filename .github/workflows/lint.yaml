@@ -19,7 +19,7 @@ jobs:
       run: |
         cd frontend
         npm ci
-     - name: Install ESLint
+    - name: Install ESLint
       run: |
         cd shared
         npm install eslint --save-dev
@@ -40,7 +40,7 @@ jobs:
       run: |
         cd backend
         npm ci
-     - name: Install ESLint
+    - name: Install ESLint
       run: |
         cd shared
         npm install eslint --save-dev
@@ -61,7 +61,7 @@ jobs:
       run: |
         cd shared
         npm ci
-     - name: Install ESLint
+    - name: Install ESLint
       run: |
         cd shared
         npm install eslint --save-dev
