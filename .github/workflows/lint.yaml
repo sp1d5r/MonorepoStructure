@@ -16,17 +16,9 @@ jobs:
       with:
         node-version: '18'
     - name: Install dependencies
-      run: |
-        cd frontend
-        npm ci
-    - name: Install ESLint
-      run: |
-        cd shared
-        npm install eslint --save-dev
+      run: npm ci
     - name: Run frontend linter
-      run: |
-        cd frontend
-        npm run lint
+      run: npm run lint:frontend
 
   lint-backend:
     runs-on: ubuntu-latest
@@ -37,17 +29,9 @@ jobs:
       with:
         node-version: '18'
     - name: Install dependencies
-      run: |
-        cd backend
-        npm ci
-    - name: Install ESLint
-      run: |
-        cd shared
-        npm install eslint --save-dev
+      run: npm ci
     - name: Run backend linter
-      run: |
-        cd backend
-        npm run lint
+      run: npm run lint:backend
 
   lint-shared:
     runs-on: ubuntu-latest
@@ -58,15 +42,6 @@ jobs:
       with:
         node-version: '18'
     - name: Install dependencies
-      run: |
-        cd shared
-        npm ci
-    - name: Install ESLint
-      run: |
-        cd shared
-        npm install eslint --save-dev
-    - name: Run backend linter
-      run: |
-        cd shared
-        npm run lint
-
+      run: npm ci
+    - name: Run shared linter
+      run: npm run lint:shared

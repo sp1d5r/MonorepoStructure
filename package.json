@@ -6,7 +6,11 @@
     "build:shared": "cd shared && npm run build",
     "start:frontend": "cd frontend && npm start",
     "start:backend": "cd backend && npm start",
-    "start": "npm run build:shared && concurrently \"npm run start:frontend\" \"npm run start:backend\""
+    "start": "npm run build:shared && concurrently \"npm run start:frontend\" \"npm run start:backend\"",
+    "lint": "eslint \"frontend/src/**/*.{js,ts,jsx,tsx}\" \"backend/src/**/*.{js,ts}\" \"shared/src/**/*.{js,ts}\"",
+    "lint:frontend": "eslint \"frontend/src/**/*.{js,ts,jsx,tsx}\"",
+    "lint:backend": "eslint \"backend/src/**/*.{js,ts}\"",
+    "lint:shared": "eslint \"shared/src/**/*.{js,ts}\""
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^8.9.0",
@@ -17,6 +21,7 @@
     "eslint-import-resolver-typescript": "^3.6.3",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-jsx-a11y": "^6.10.0",
-    "eslint-plugin-react": "^7.37.1"
+    "eslint-plugin-react": "^7.37.1",
+    "typescript": "^4.5.4"
   }
 }
