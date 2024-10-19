@@ -16,7 +16,9 @@ jobs:
       with:
         node-version: '18'
     - name: Install dependencies
-      run: npm ci
+      run: |
+        npm install
+        cd frontend && npm install
     - name: Run frontend linter
       run: npm run lint:frontend
 
@@ -29,7 +31,9 @@ jobs:
       with:
         node-version: '18'
     - name: Install dependencies
-      run: npm ci
+      run: |
+        npm install
+        cd backend && npm install
     - name: Run backend linter
       run: npm run lint:backend
 
@@ -42,6 +46,8 @@ jobs:
       with:
         node-version: '18'
     - name: Install dependencies
-      run: npm ci
+      run: |
+        npm install
+        cd shared && npm install
     - name: Run shared linter
       run: npm run lint:shared
