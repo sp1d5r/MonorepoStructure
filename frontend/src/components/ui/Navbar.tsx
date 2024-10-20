@@ -50,8 +50,8 @@ export default function Navbar() {
               <DropdownMenuItem onSelect={() => handleNavigation('/features')} className="dark:text-gray-200 dark:focus:bg-gray-700">Features</DropdownMenuItem>
               <DropdownMenuItem onSelect={() => handleNavigation('/pricing')} className="dark:text-gray-200 dark:focus:bg-gray-700">Pricing</DropdownMenuItem>
               <DropdownMenuItem onSelect={() => handleNavigation('/contact')} className="dark:text-gray-200 dark:focus:bg-gray-700">Contact</DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => handleNavigation('/login')} className="dark:text-gray-200 dark:focus:bg-gray-700">Log in</DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => handleNavigation('/signup')} className="dark:text-gray-200 dark:focus:bg-gray-700">Sign up</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => handleNavigation('/authentication?mode=login')} className="dark:text-gray-200 dark:focus:bg-gray-700">Log in</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => handleNavigation('/authentication?mode=sign-up')} className="dark:text-gray-200 dark:focus:bg-gray-700">Sign up</DropdownMenuItem>
               <DropdownMenuItem onSelect={toggleDarkMode} className="dark:text-gray-200 dark:focus:bg-gray-700">
                 {darkModeState ? 'Light Mode' : 'Dark Mode'}
               </DropdownMenuItem>

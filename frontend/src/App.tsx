@@ -8,6 +8,7 @@ import { DarkModeProvider } from './contexts/DarkModeProvider';
 import { AuthProvider } from './contexts/AuthenticationProvider';
 import { ResetPassword } from './pages/ResetPassword';
 import Dashboard from './pages/Dashboard';
+import { Pricing } from './pages/Pricing';
 
 // Example components for different routes
 const About = () => <ScrollableLayout><h2>About Page</h2></ScrollableLayout>;
@@ -24,6 +25,7 @@ function App() {
               <Route path="/" element={<Landing />} />
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/pricing" element={<Pricing />} />
 
               {/* Authentication Pages */}
               <Route path="/authentication" element={<Authentication />} />

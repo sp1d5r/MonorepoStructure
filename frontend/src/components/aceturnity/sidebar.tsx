@@ -169,7 +169,7 @@ export const SidebarLink = ({
     return (
       <div
         className={cn(
-          "flex items-center justify-start gap-2 group/sidebar py-2 cursor-pointer w-[30px] px-[5px] rounded text-white dark:text-black",
+          "flex items-center justify-start gap-2 group/sidebar py-2 cursor-pointer w-[30px] px-[5px] rounded text-black dark:text-white",
           active ? "bg-neutral-200 dark:bg-white/30" : "",
           className
         )}
@@ -183,7 +183,7 @@ export const SidebarLink = ({
             display: animate ? (open ? "inline-block" : "none") : "inline-block",
             opacity: animate ? (open ? 1 : 0) : 1,
           }}
-          className="text-neutral-700 dark:text-black text-sm group-hover/sidebar:translate-x-1 transition duration-150 whitespace-pre inline-block !p-0 !m-0"
+          className="text-neutral-700 dark:text-white text-sm group-hover/sidebar:translate-x-1 transition duration-150 whitespace-pre inline-block !p-0 !m-0"
         >
           {link.label}
         </motion.span>

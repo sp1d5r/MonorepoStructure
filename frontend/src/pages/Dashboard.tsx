@@ -12,6 +12,8 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import { Button } from "../components/shadcn/button";
 import { Moon, Sun } from "lucide-react";
 import { useDarkMode } from "../contexts/DarkModeProvider";
+import { DashboardMain } from "../components/page-components/dashboard/DashboardMain";
+import { useAuth } from "../contexts/AuthenticationProvider";
 
 const Dashboard: React.FC = () => {
   const [open, setOpen] = useState(false);
@@ -19,6 +21,7 @@ const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const {darkModeState, toggleDarkMode} = useDarkMode();
   const [activeContent, setActiveContent] = useState<string>("home");
+  const { authState, logout } = useAuth();
 
   useEffect(() => {
     const content = searchParams.get("content");
@@ -29,20 +32,26 @@ const Dashboard: React.FC = () => {
     }
   }, [searchParams]);
 
+  useEffect(() => {
+    if (authState && !!authState.isAuthenticated) {
+
+    }
+  }, [authState, navigate])
+
   const handleLinkClick = (id: string) => {
     navigate(`?content=${id}`);
   };
 
   return (
     <div className={cn(
-      "rounded-md flex flex-col md:flex-row bg-gray-100 dark:bg-neutral-800 w-full flex-1 mx-auto border border-neutral-200 dark:border-neutral-700 overflow-hidden px-1 py-1",
+      "rounded-md flex flex-col md:flex-row bg-white dark:bg-neutral-950 w-full flex-1 mx-auto border border-neutral-200 dark:border-neutral-700 overflow-hidden px-1 py-1",
       "h-screen"
     )}>
       <Sidebar open={open} setOpen={setOpen}>
-        <SidebarBody className="justify-between gap-10 bg-black dark:bg-gray-300 rounded-l-xl">
+        <SidebarBody className="justify-between gap-10 bg-gray-100 dark:bg-gray-800 rounded-l-xl">
           <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
             {open ? <Logo /> : <LogoIcon />}
-            <div className="mt-8 flex flex-col gap-2 text-white dark:text-black ">
+            <div className="mt-8 flex flex-col gap-2 text-gray-800 dark:text-gray-200">
               {sidebarLinks.map((link) => (
                 <SidebarLink 
                   key={link.id} 
@@ -53,14 +62,20 @@ const Dashboard: React.FC = () => {
               ))}
             </div>
           </div>
-          <div className="flex flex-col gap-2 text-white dark:text-black">
-            <Button variant="outline" size="icon" onClick={toggleDarkMode} className="dark:border-gray-600 dark:text-gray-200 dark:hover:text-white dark:hover:border-gray-400">
-                {darkModeState ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-            </Button>
+          <div className="flex flex-col gap-2 text-gray-800 dark:text-gray-200">
+            <div className={`flex gap-2 ${!open && 'flex-col'}`}>
+                <Button variant="outline" size="icon" onClick={toggleDarkMode} className="border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:border-gray-400 dark:hover:border-gray-500">
+                    {darkModeState ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+                </Button>
+                <Button variant='destructive' onClick={() => {logout()}}>
+                    <IconLogout className="h-5 w-5 flex-shrink-0" />
+                    {open && 'Logout'}
+                </Button>
+            </div>
             <SidebarLink
               link={{
                 id: "profile",
-                label: "User Name",
+                label: authState.user?.name!,
                 icon: <UserAvatar />
               }}
               onClick={() => handleLinkClick("profile")}
@@ -70,6 +85,9 @@ const Dashboard: React.FC = () => {
         </SidebarBody>
       </Sidebar>
       <main className="flex-1 p-6 overflow-auto">
+        <nav>
+
+        </nav>
         {renderContent(activeContent)}
       </main>
     </div>
@@ -77,55 +95,55 @@ const Dashboard: React.FC = () => {
 };
 
 const Logo = () => (
-  <div className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20">
-    <div className="h-5 w-6 bg-white dark:bg-black rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm flex-shrink-0" />
-    <motion.span
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="font-medium text-white dark:text-black whitespace-pre"
-    >
-      Startup Name
-    </motion.span>
-  </div>
+    <div className="font-normal flex space-x-2 items-center text-sm text-gray-800 dark:text-gray-200 py-1 relative z-20">
+        <div className="h-5 w-6 bg-gray-800 dark:bg-gray-200 rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm flex-shrink-0" />
+        <motion.span
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="font-medium whitespace-pre"
+        >
+        Startup Name
+        </motion.span>
+</div>
 );
 
 const LogoIcon = () => (
-  <div className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20">
-    <div className="h-5 w-6 bg-white dark:bg-black rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm flex-shrink-0" />
-  </div>
+<div className="font-normal flex space-x-2 items-center text-sm text-gray-800 dark:text-gray-200 py-1 relative z-20">
+    <div className="h-5 w-6 bg-gray-800 dark:bg-gray-200 rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm flex-shrink-0" />
+</div>
 );
 
 const UserAvatar = () => (
-  <div className="h-7 w-7 flex-shrink-0 rounded-full bg-white dark:bg-black" />
+<div className="h-7 w-7 flex-shrink-0 rounded-full bg-gray-300 dark:bg-gray-600" />
 );
 
 const sidebarLinks = [
-  {
+{
     id: "home",
     label: "Dashboard",
-    icon: <IconHome className="text-white dark:text-black h-5 w-5 flex-shrink-0" />
-  },
-  {
+    icon: <IconHome className="h-5 w-5 flex-shrink-0" />
+},
+{
     id: "profile",
     label: "Profile",
-    icon: <IconUser className="text-white dark:text-black h-5 w-5 flex-shrink-0" />
-  },
-  {
+    icon: <IconUser className="h-5 w-5 flex-shrink-0" />
+},
+{
     id: "settings",
     label: "Settings",
-    icon: <IconSettings className="text-white dark:text-black h-5 w-5 flex-shrink-0" />
-  },
-  {
+    icon: <IconSettings className="h-5 w-5 flex-shrink-0" />
+},
+{
     id: "logout",
     label: "Logout",
-    icon: <IconLogout className="text-white dark:text-black h-5 w-5 flex-shrink-0" />
-  }
+    icon: <IconLogout className="h-5 w-5 flex-shrink-0" />
+}
 ];
 
 const renderContent = (contentId: string) => {
   switch (contentId) {
     case "home":
-      return <h1>Dashboard Home</h1>;
+      return <DashboardMain />;
     case "profile":
       return <h1>User Profile</h1>;
     case "settings":
