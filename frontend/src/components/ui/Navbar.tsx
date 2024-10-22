@@ -26,7 +26,7 @@ export default function Navbar() {
         </div>
         <div className="hidden md:flex space-x-4">
           <Button variant="ghost" asChild><Link to="/" className="dark:text-gray-200">Home</Link></Button>
-          <Button variant="ghost" asChild><Link to="/features" className="dark:text-gray-200">Features</Link></Button>
+          <Button variant="ghost" asChild><Link to="/articles" className="dark:text-gray-200">Articles</Link></Button>
           <Button variant="ghost" asChild><Link to="/pricing" className="dark:text-gray-200">Pricing</Link></Button>
           <Button variant="ghost" asChild><Link to="/contact" className="dark:text-gray-200">Contact</Link></Button>
         </div>
@@ -47,7 +47,7 @@ export default function Navbar() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="dark:bg-gray-800 dark:border-gray-700">
               <DropdownMenuItem onSelect={() => handleNavigation('/')} className="dark:text-gray-200 dark:focus:bg-gray-700">Home</DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => handleNavigation('/features')} className="dark:text-gray-200 dark:focus:bg-gray-700">Features</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => handleNavigation('/articles')} className="dark:text-gray-200 dark:focus:bg-gray-700">Articles</DropdownMenuItem>
               <DropdownMenuItem onSelect={() => handleNavigation('/pricing')} className="dark:text-gray-200 dark:focus:bg-gray-700">Pricing</DropdownMenuItem>
               <DropdownMenuItem onSelect={() => handleNavigation('/contact')} className="dark:text-gray-200 dark:focus:bg-gray-700">Contact</DropdownMenuItem>
               <DropdownMenuItem onSelect={() => handleNavigation('/authentication?mode=login')} className="dark:text-gray-200 dark:focus:bg-gray-700">Log in</DropdownMenuItem>

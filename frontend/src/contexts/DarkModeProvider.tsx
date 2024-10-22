@@ -19,7 +19,10 @@ import React, {
   
   // Dark Mode Provider component
   export const DarkModeProvider: React.FC<DarkModeProviderProps> = ({ children }) => {
-    const [darkModeState, setDarkModeState] = useState<DarkModeState>({ darkMode: true });
+    const [darkModeState, setDarkModeState] = useState<DarkModeState>(() => {
+      const storedDarkMode = localStorage.getItem('darkMode');
+      return { darkMode: storedDarkMode === 'true' };
+    });
   
     useEffect(() => {
       const { darkMode } = darkModeState;
