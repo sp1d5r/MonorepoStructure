@@ -1,36 +1,27 @@
 import React, { useState, useEffect } from "react";
 import ScrollableLayout from "../layouts/ScrollableLayout";
-import { Client } from "@notionhq/client";
+import Article from "@my-monorepo/shared/dist/types/Article";
+import { useApi } from "../contexts/ApiContext";
+import { Link } from "react-router-dom";
 
 export interface ArticlesProps {}
 
-interface Article {
-  id: string;
-  title: string;
-  // Add other properties as needed
-}
 
 export const Articles: React.FC<ArticlesProps> = () => {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { apiUrl } = useApi();
 
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const notion = new Client({ auth: process.env.REACT_APP_NOTION_API_KEY });
-        const response = await notion.databases.query({
-          database_id: process.env.REACT_APP_NOTION_DATABASE_ID as string,
-        });
-        
-        console.log(response)
-        const fetchedArticles = response.results.map((page: any) => ({
-          id: page.id,
-          title: page.properties.Title.title[0].plain_text,
-          // Map other properties as needed
-        }));
-        
-        setArticles(fetchedArticles);
+        const response = await fetch(`${apiUrl}/api/articles`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch articles');
+        }
+        const data = await response.json();
+        setArticles(data);
         setLoading(false);
       } catch (err) {
         console.error("Error fetching articles:", err);
@@ -40,7 +31,7 @@ export const Articles: React.FC<ArticlesProps> = () => {
     };
 
     fetchArticles();
-  }, []);
+  }, [apiUrl]);
 
   return (
     <ScrollableLayout>
@@ -49,14 +40,39 @@ export const Articles: React.FC<ArticlesProps> = () => {
         {loading && <p>Loading articles...</p>}
         {error && <p className="text-red-500">{error}</p>}
         {!loading && !error && (
-          <ul className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {articles.map((article) => (
-              <li key={article.id} className="border p-4 rounded">
-                <h2 className="text-2xl font-semibold">{article.title}</h2>
-                {/* Add more article details here */}
-              </li>
+              <div key={article.id} className="border rounded-lg overflow-hidden shadow-lg">
+                {article.cover && article.cover.type === 'external' && (
+                  <img 
+                    src={article.cover.external?.url} 
+                    alt="Article cover" 
+                    className="w-full h-48 object-cover"
+                  />
+                )}
+                <div className="p-4">
+                  <h2 className="text-xl font-semibold mb-2">{article.properties.Name}</h2>
+                  <p className="text-gray-600 dark:text-gray-300 mb-2">{article.properties.Description}</p>
+                  <div className="flex flex-wrap gap-2 mb-2">
+                    {article.properties.Tags && article.properties.Tags.map((tag: string, index: number) => (
+                      <span key={index} className="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    Published: {new Date(article.properties.Date).toLocaleDateString()}
+                  </p>
+                  <Link 
+                    to={`/article/${article.properties.Slug}`}
+                    className="inline-block mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+                  >
+                    Read More
+                  </Link>
+                </div>
+              </div>
             ))}
-          </ul>
+          </div>
         )}
       </div>
     </ScrollableLayout>

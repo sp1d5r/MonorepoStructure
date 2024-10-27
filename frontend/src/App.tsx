@@ -10,6 +10,8 @@ import { ResetPassword } from './pages/ResetPassword';
 import Dashboard from './pages/Dashboard';
 import { Pricing } from './pages/Pricing';
 import { Articles } from './pages/Articles';
+import { ApiProvider } from './contexts/ApiContext';
+import { ArticlePage } from './pages/ArticlePage';
 
 // Example components for different routes
 const About = () => <ScrollableLayout><h2>About Page</h2></ScrollableLayout>;
@@ -22,22 +24,27 @@ function App() {
       <Router>
         <DarkModeProvider>
           <AuthProvider>
-            <Routes>
-              <Route path="/" element={<Landing />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/pricing" element={<Pricing />} />
-              <Route path="/articles" element={<Articles />} />
+            <ApiProvider>
+              <Routes>
+                <Route path="/" element={<Landing />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/pricing" element={<Pricing />} />
 
-              {/* Authentication Pages */}
-              <Route path="/authentication" element={<Authentication />} />
-              <Route path="/reset-password" element={<ResetPassword />} />
+                {/* Articles */}
+                <Route path="/articles" element={<Articles />} />
+                <Route path="/article/:slug" element={<ArticlePage />} />
 
-              {/* Main Page */}
-              <Route path="/dashboard" element={<Dashboard />} />
+                {/* Authentication Pages */}
+                <Route path="/authentication" element={<Authentication />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
 
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+                {/* Main Page */}
+                <Route path="/dashboard" element={<Dashboard />} />
+
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </ApiProvider>
           </AuthProvider>
         </DarkModeProvider>
       </Router>
