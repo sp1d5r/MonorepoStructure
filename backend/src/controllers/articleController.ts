@@ -3,8 +3,9 @@ import { Client } from '@notionhq/client';
 import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 import { NotionToMarkdown } from "notion-to-md";
 import Article from '@my-monorepo/shared/dist/types/Article';
-import dotenv from 'dotenv';
-dotenv.config();
+import {config} from 'dotenv';
+
+config();
 
 const notion = new Client({ auth: process.env.NOTION_API_KEY });
 
@@ -17,7 +18,7 @@ export const getArticles = async (req: Request, res: Response) => {
     const articles: Article[] = response.results
       .filter((page): page is PageObjectResponse => 'properties' in page)
       .map((page: PageObjectResponse) => {
-        const properties: { [key: string]: any } = {};
+        const properties: { [key: string]: string | string[] | boolean | undefined | number } = {};
 
         for (const [key, value] of Object.entries(page.properties)) {
           switch (value.type) {
@@ -28,7 +29,7 @@ export const getArticles = async (req: Request, res: Response) => {
               properties[key] = value.rich_text[0]?.plain_text || '';
               break;
             case 'date':
-              properties[key] = value.date?.start || null;
+              properties[key] = value.date?.start || undefined;
               break;
             case 'checkbox':
               properties[key] = value.checkbox;
@@ -37,13 +38,13 @@ export const getArticles = async (req: Request, res: Response) => {
               properties[key] = value.multi_select.map((item) => item.name);
               break;
             case 'select':
-              properties[key] = value.select?.name || null;
+              properties[key] = value.select?.name || undefined;
               break;
             case 'number':
-              properties[key] = value.number;
+              properties[key] = value.number || 0;
               break;
             case 'url':
-              properties[key] = value.url;
+              properties[key] = value.url || "";
               break;
             default:
               properties[key] = JSON.stringify(value);
@@ -88,7 +89,7 @@ export const getArticleBySlug = async (req: Request, res: Response): Promise<voi
       const mdblocks = await n2m.pageToMarkdown(page.id);
       const mdString = n2m.toMarkdownString(mdblocks);
   
-      const properties: { [key: string]: any } = {};
+      const properties: { [key: string]: string | string[] | boolean | undefined | number } = {};
   
       for (const [key, value] of Object.entries(page.properties)) {
         switch (value.type) {
