@@ -51,7 +51,7 @@ export const ArticlePage: React.FC = () => {
         <h1 className="text-4xl font-bold mb-4">{article.properties.Name}</h1>
         <p className="text-gray-600 dark:text-gray-300 mb-2">{article.properties.Description}</p>
         <p className="text-sm text-gray-500 dark:text-gray-400">
-        Published: {new Date(article.properties.Date).toLocaleDateString()}
+        Published: {article.properties.Date}
         </p>
         <div className="prose dark:prose-invert max-w-none">
           {article.content ? <ReactMarkdown>{article.content!}</ReactMarkdown> : <p>... Wow... There's nothing here</p>}

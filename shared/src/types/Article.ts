@@ -1,7 +1,7 @@
 export default interface Article {
     id: string;
     properties: {
-      [key: string]: string | boolean | string[];
+      [key: string]: string | string[] | boolean | undefined | number;
     };
     cover: {
       type: string;

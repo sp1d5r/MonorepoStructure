@@ -100,7 +100,7 @@ export const getArticleBySlug = async (req: Request, res: Response): Promise<voi
             properties[key] = value.rich_text[0]?.plain_text || '';
             break;
           case 'date':
-            properties[key] = value.date?.start || null;
+            properties[key] = value.date?.start || undefined;
             break;
           case 'checkbox':
             properties[key] = value.checkbox;
@@ -109,13 +109,13 @@ export const getArticleBySlug = async (req: Request, res: Response): Promise<voi
             properties[key] = value.multi_select.map((item) => item.name);
             break;
           case 'select':
-            properties[key] = value.select?.name || null;
+            properties[key] = value.select?.name || undefined;
             break;
           case 'number':
-            properties[key] = value.number;
+            properties[key] = value.number || undefined;
             break;
           case 'url':
-            properties[key] = value.url;
+            properties[key] = value.url || undefined;
             break;
           default:
             properties[key] = JSON.stringify(value);

@@ -54,14 +54,14 @@ export const Articles: React.FC<ArticlesProps> = () => {
                   <h2 className="text-xl font-semibold mb-2">{article.properties.Name}</h2>
                   <p className="text-gray-600 dark:text-gray-300 mb-2">{article.properties.Description}</p>
                   <div className="flex flex-wrap gap-2 mb-2">
-                    {article.properties.Tags && article.properties.Tags.map((tag: string, index: number) => (
+                    {article.properties.Tags && Array.isArray(article.properties.Tags) && article.properties.Tags.map((tag: string, index: number) => (
                       <span key={index} className="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800">
                         {tag}
                       </span>
                     ))}
                   </div>
                   <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Published: {new Date(article.properties.Date).toLocaleDateString()}
+                    Published: {article.properties.Date}
                   </p>
                   <Link 
                     to={`/article/${article.properties.Slug}`}
