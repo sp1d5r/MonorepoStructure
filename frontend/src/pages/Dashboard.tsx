@@ -13,7 +13,7 @@ import { Button } from "../components/shadcn/button";
 import { Moon, Sun } from "lucide-react";
 import { useDarkMode } from "../contexts/DarkModeProvider";
 import { DashboardMain } from "../components/page-components/dashboard/DashboardMain";
-import { useAuth } from "../contexts/AuthenticationProvider";
+import { AuthStatus, useAuth } from "../contexts/AuthenticationProvider";
 
 const Dashboard: React.FC = () => {
   const [open, setOpen] = useState(false);
@@ -33,8 +33,15 @@ const Dashboard: React.FC = () => {
   }, [searchParams]);
 
   useEffect(() => {
-    if (authState && !!authState.isAuthenticated) {
-
+    if (authState) {
+      switch (authState.status) {
+        case AuthStatus.UNAUTHENTICATED:
+          navigate("/authentication?mode=login")
+          break
+        case AuthStatus.AUTHENTICATED:
+        case AuthStatus.LOADING:
+          break
+      }
     }
   }, [authState, navigate])
 
