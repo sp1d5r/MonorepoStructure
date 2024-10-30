@@ -14,6 +14,7 @@ import { Moon, Sun } from "lucide-react";
 import { useDarkMode } from "../contexts/DarkModeProvider";
 import { DashboardMain } from "../components/page-components/dashboard/DashboardMain";
 import { AuthStatus, useAuth } from "../contexts/AuthenticationProvider";
+import { ProfileStatus, useProfile } from "../contexts/ProfileProvider";
 
 const Dashboard: React.FC = () => {
   const [open, setOpen] = useState(false);
@@ -22,6 +23,7 @@ const Dashboard: React.FC = () => {
   const {darkModeState, toggleDarkMode} = useDarkMode();
   const [activeContent, setActiveContent] = useState<string>("home");
   const { authState, logout } = useAuth();
+  const { status: profileStatus } = useProfile();
 
   useEffect(() => {
     const content = searchParams.get("content");
@@ -36,14 +38,25 @@ const Dashboard: React.FC = () => {
     if (authState) {
       switch (authState.status) {
         case AuthStatus.UNAUTHENTICATED:
-          navigate("/authentication?mode=login")
-          break
+          navigate("/authentication?mode=login");
+          break;
         case AuthStatus.AUTHENTICATED:
+          // Check profile status when authenticated
+          switch (profileStatus) {
+            case ProfileStatus.NO_PROFILE:
+            case ProfileStatus.NEEDS_ONBOARDING:
+              navigate("/onboarding");
+              break;
+            case ProfileStatus.COMPLETE:
+            case ProfileStatus.LOADING:
+              break;
+          }
+          break;
         case AuthStatus.LOADING:
-          break
+          break;
       }
     }
-  }, [authState, navigate])
+  }, [authState, profileStatus, navigate]);
 
   const handleLinkClick = (id: string) => {
     navigate(`?content=${id}`);

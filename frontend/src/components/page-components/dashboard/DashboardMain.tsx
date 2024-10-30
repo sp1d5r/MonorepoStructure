@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from "../../shadcn/button";
 import { Plus, Edit, Music, Share2 } from "lucide-react";
+import { motion } from 'framer-motion';
 
 export interface DashboardMainProps {
 
@@ -28,9 +29,15 @@ interface DashboardButtonProps {
 }
 
 const DashboardButton: React.FC<DashboardButtonProps> = ({ icon, text, subtext, beta = false }) => {
+    const fadeIn = {
+        initial: { opacity: 0 },
+        animate: { opacity: 1 },
+        transition: { duration: 0.7 }
+      };
+
     return (
         <Button variant="outline" className="h-auto w-full justify-start text-left max-w-[300px] ">
-            <div className="flex items-center">
+            <motion.div {...fadeIn} className="flex items-center">
                 <div className="mr-3 text-2xl">{icon}</div>
                 <div>
                     <div className="font-bold flex items-center">
@@ -39,7 +46,7 @@ const DashboardButton: React.FC<DashboardButtonProps> = ({ icon, text, subtext, 
                     </div>
                     <div className="text-sm text-muted-foreground">{subtext}</div>
                 </div>
-            </div>
+            </motion.div>
         </Button>
     );
 }

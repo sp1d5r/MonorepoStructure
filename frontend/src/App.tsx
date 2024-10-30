@@ -12,6 +12,8 @@ import { Pricing } from './pages/Pricing';
 import { Articles } from './pages/Articles';
 import { ApiProvider } from './contexts/ApiContext';
 import { ArticlePage } from './pages/ArticlePage';
+import { ProfileProvider } from './contexts/ProfileProvider';
+import Onboarding from './pages/Onboarding';
 
 // Example components for different routes
 const About = () => <ScrollableLayout><h2>About Page</h2></ScrollableLayout>;
@@ -24,27 +26,32 @@ function App() {
       <Router>
         <DarkModeProvider>
           <AuthProvider>
-            <ApiProvider>
-              <Routes>
-                <Route path="/" element={<Landing />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/pricing" element={<Pricing />} />
+            <ProfileProvider>
+              <ApiProvider>
+                <Routes>
+                  <Route path="/" element={<Landing />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="/contact" element={<Contact />} />
+                  <Route path="/pricing" element={<Pricing />} />
 
-                {/* Articles */}
-                <Route path="/articles" element={<Articles />} />
-                <Route path="/article/:slug" element={<ArticlePage />} />
+                  {/* Articles */}
+                  <Route path="/articles" element={<Articles />} />
+                  <Route path="/article/:slug" element={<ArticlePage />} />
 
-                {/* Authentication Pages */}
-                <Route path="/authentication" element={<Authentication />} />
-                <Route path="/reset-password" element={<ResetPassword />} />
+                  {/* Authentication Pages */}
+                  <Route path="/authentication" element={<Authentication />} />
+                  <Route path="/reset-password" element={<ResetPassword />} />
 
-                {/* Main Page */}
-                <Route path="/dashboard" element={<Dashboard />} />
+                  {/* Onboarding Pages */}
+                  <Route path="/onboarding" element={<Onboarding />} />
 
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </ApiProvider>
+                  {/* Main Page */}
+                  <Route path="/dashboard" element={<Dashboard />} />
+
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </ApiProvider>
+            </ProfileProvider>
           </AuthProvider>
         </DarkModeProvider>
       </Router>
