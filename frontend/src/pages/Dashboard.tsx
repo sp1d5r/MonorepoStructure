@@ -15,6 +15,7 @@ import { useDarkMode } from "../contexts/DarkModeProvider";
 import { DashboardMain } from "../components/page-components/dashboard/DashboardMain";
 import { AuthStatus, useAuth } from "../contexts/AuthenticationProvider";
 import { ProfileStatus, useProfile } from "../contexts/ProfileProvider";
+import DashboardProfile from "../components/page-components/dashboard/DashboardProfile";
 
 const Dashboard: React.FC = () => {
   const [open, setOpen] = useState(false);
@@ -23,7 +24,7 @@ const Dashboard: React.FC = () => {
   const {darkModeState, toggleDarkMode} = useDarkMode();
   const [activeContent, setActiveContent] = useState<string>("home");
   const { authState, logout } = useAuth();
-  const { status: profileStatus } = useProfile();
+  const { status: profileStatus, profile} = useProfile();
 
   useEffect(() => {
     const content = searchParams.get("content");
@@ -95,7 +96,7 @@ const Dashboard: React.FC = () => {
             <SidebarLink
               link={{
                 id: "profile",
-                label: authState.user?.name!,
+                label: (profile && profile.displayName) || '',
                 icon: <UserAvatar />
               }}
               onClick={() => handleLinkClick("profile")}
@@ -165,7 +166,7 @@ const renderContent = (contentId: string) => {
     case "home":
       return <DashboardMain />;
     case "profile":
-      return <h1>User Profile</h1>;
+      return <DashboardProfile />;
     case "settings":
       return <h1>Settings</h1>;
     case "logout":

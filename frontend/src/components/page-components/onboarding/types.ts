@@ -6,11 +6,3 @@ export const STEPS = {
   } as const;
   
 export type StepId = typeof STEPS[keyof typeof STEPS];
-
-export interface Plan {
-    type: 'free' | 'pro' | 'enterprise';
-    name: string;
-    price: string;
-    description: string;
-    features: string[];
-}

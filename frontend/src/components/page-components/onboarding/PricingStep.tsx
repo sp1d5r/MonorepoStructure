@@ -1,6 +1,6 @@
 import React from 'react';
 import { Check } from 'lucide-react';
-import { PRICING_PLANS } from './constants';
+import { PRICING_PLANS } from '@my-monorepo/shared/dist/types/Plans';
 import UserProfile from '@my-monorepo/shared/dist/types/UserProfile';
 
 interface PlanStepProps {
