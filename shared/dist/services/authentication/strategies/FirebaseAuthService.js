@@ -60,6 +60,17 @@ const FirebaseAuthService = {
             }
         });
     },
+    loginWithGoogle() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const provider = new auth_1.GoogleAuthProvider();
+            const userCredential = yield (0, auth_1.signInWithPopup)(auth, provider);
+            return {
+                uid: userCredential.user.uid,
+                name: userCredential.user.displayName || '',
+                email: userCredential.user.email || '',
+            };
+        });
+    },
     resetPassword(email) {
         return __awaiter(this, void 0, void 0, function* () {
             yield (0, auth_1.sendPasswordResetEmail)(auth, email);

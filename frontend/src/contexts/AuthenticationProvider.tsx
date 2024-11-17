@@ -17,6 +17,7 @@ interface AuthState {
 interface AuthContextProps {
   authState: AuthState;
   login: (email: string, password: string, onSuccess?: () => void, onFailure?: (error: firebase.FirebaseError) => void) => void;
+  loginWithGoogle: (onSuccess?: () => void, onFailure?: (error: firebase.FirebaseError) => void) => void;
   logout: (onSuccess?: () => void, onFailure?: (error: firebase.FirebaseError) => void) => void;
   register: (email: string, name: string, password: string, onSuccess?: () => void, onFailure?: (error: any) => void) => void;
   resetPassword: (email: string, onSuccess?: () => void, onFailure?: (error: any) => void) => void;
@@ -92,10 +93,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const loginWithGoogle = async (onSuccess?: () => void, onFailure?: (error: any) => void) => {
+    try {
+      await FirebaseAuthService.loginWithGoogle();
+      if (onSuccess) onSuccess();
+    } catch (error) {
+      if (onFailure) onFailure(error);
+    }
+  };
+
   return (
     <AuthContext.Provider value={{ 
       authState, 
       login, 
+      loginWithGoogle,
       logout, 
       register, 
       resetPassword 

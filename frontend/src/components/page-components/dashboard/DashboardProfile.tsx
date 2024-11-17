@@ -11,7 +11,6 @@ import {
   Building2,
   CreditCard,
   Phone,
-  Mail,
   Calendar,
   Briefcase,
   Edit2,

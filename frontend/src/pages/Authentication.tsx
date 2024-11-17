@@ -10,13 +10,20 @@ import { useAuth } from '../contexts/AuthenticationProvider';
 export const Authentication: React.FC = () => {
     const [searchParams] = useSearchParams();
     const mode = searchParams.get('mode') === 'sign-up' ? 'sign-up' : 'login';
-    const { login, register } = useAuth();
+    const { login, register, loginWithGoogle } = useAuth();
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [name, setName] = useState('');
     const [error, setError] = useState<string | null>(null);
+
+    const handleGoogleSignIn = () => {
+      loginWithGoogle(
+          () => navigate('/dashboard'),
+          (error) => setError(error.message)
+      );
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -124,7 +131,11 @@ export const Authentication: React.FC = () => {
               {mode === 'sign-up' ? 'Sign Up' : 'Login'}
             </Button>
             {error && <p className="text-red-500 text-sm">{error}</p>}
-            <Button variant="outline" className="w-full dark:text-white">
+            <Button 
+              variant="outline" 
+              className="w-full dark:text-white"
+              onClick={handleGoogleSignIn}
+            >
               {mode === 'sign-up' ? 'Sign Up' : 'Login'} with Google
             </Button>
           </div>

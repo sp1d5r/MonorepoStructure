@@ -7,6 +7,8 @@ import {
   signOut,
   User as FirebaseUser,
   updateProfile,
+  signInWithPopup,
+  GoogleAuthProvider,
 } from 'firebase/auth';
 import AuthService from '../AuthenticationInterface';
 import app from '../../../config/firebaseConfig';
@@ -54,6 +56,16 @@ const FirebaseAuthService: AuthService = {
         callback(null);
       }
     });
+  },
+
+  async loginWithGoogle() {
+    const provider = new GoogleAuthProvider();
+    const userCredential = await signInWithPopup(auth, provider);
+    return {
+      uid: userCredential.user.uid,
+      name: userCredential.user.displayName || '',
+      email: userCredential.user.email || '',
+    };
   },
 
   async resetPassword(email: string) {
