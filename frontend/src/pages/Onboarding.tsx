@@ -11,6 +11,7 @@ import PersonalStep from '../components/page-components/onboarding/PersonalStep'
 import CompanyStep from '../components/page-components/onboarding/CompanyStep';
 import PlanStep from '../components/page-components/onboarding/PricingStep';
 import UserProfile from '@my-monorepo/shared/dist/types/UserProfile';
+import { useApi } from '../contexts/ApiContext';
 
 const OnboardingFlow: React.FC = () => {
   const { completeOnboarding, status: profileStatus } = useProfile();
@@ -18,6 +19,7 @@ const OnboardingFlow: React.FC = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const { apiUrl, fetchWithAuth } = useApi();
 
   useEffect(() => {
     if (!authState) return;
@@ -155,27 +157,87 @@ const OnboardingFlow: React.FC = () => {
   async function handleNext() {
     const currentStepValidation = steps[step].validationFn;
     const stepErrors = currentStepValidation();
-
+  
     if (stepErrors) {
       setErrors(stepErrors);
       return;
     }
-
+  
     if (step === steps.length - 1) {
       try {
-        const profileData = {
-          displayName: data.displayName,
-          ...(data.phoneNumber && { phoneNumber: data.phoneNumber }),
-          ...(data.dateOfBirth && { dateOfBirth: data.dateOfBirth }),
-          industry: data.industry,
-          referralSource: data.referralSource,
-          ...(data.companyName && { companyName: data.companyName }),
-          ...(data.companySize && { companySize: data.companySize }),
-          selectedPlan: data.selectedPlan
-        };
-        
-        await completeOnboarding(profileData);
-        navigate('/dashboard');
+        // 1. First create the Stripe customer
+        const createCustomerResponse = await fetchWithAuth('api/payments/create-customer', {
+          method: 'POST',
+          body: JSON.stringify({
+            name: data.displayName,
+            email: authState.user?.email,
+            phone: data.phoneNumber,
+            metadata: {
+              industry: data.industry,
+              companyName: data.companyName,
+              companySize: data.companySize,
+            }
+          }),
+        });
+  
+        if (!createCustomerResponse.ok) {
+          throw new Error('Failed to create customer');
+        }
+  
+        const { customerId } = await createCustomerResponse.json();
+  
+        // 2. If they selected a paid plan, create a checkout session
+        if (data.selectedPlan && data.selectedPlan !== 'free') {
+          const checkoutResponse = await fetchWithAuth('api/payments/create-checkout-session', {
+            method: 'POST',
+            body: JSON.stringify({
+              priceId: data.selectedPlan, // Your Stripe price ID
+              customerId,
+              successUrl: `${window.location.origin}/dashboard?session_id={CHECKOUT_SESSION_ID}`,
+              cancelUrl: `${window.location.origin}/onboarding`,
+            }),
+          });
+  
+          if (!checkoutResponse.ok) {
+            throw new Error('Failed to create checkout session');
+          }
+  
+          const { url: checkoutUrl } = await checkoutResponse.json();
+  
+          // 3. Complete onboarding with the customer ID
+          const profileData = {
+            displayName: data.displayName,
+            ...(data.phoneNumber && { phoneNumber: data.phoneNumber }),
+            ...(data.dateOfBirth && { dateOfBirth: data.dateOfBirth }),
+            industry: data.industry,
+            referralSource: data.referralSource,
+            ...(data.companyName && { companyName: data.companyName }),
+            ...(data.companySize && { companySize: data.companySize }),
+            selectedPlan: data.selectedPlan,
+            stripeCustomerId: customerId, // Store the Stripe customer ID
+          };
+          
+          await completeOnboarding(profileData);
+  
+          // 4. Redirect to Stripe Checkout
+          window.location.href = checkoutUrl;
+        } else {
+          // If free plan, just complete onboarding
+          const profileData = {
+            displayName: data.displayName,
+            ...(data.phoneNumber && { phoneNumber: data.phoneNumber }),
+            ...(data.dateOfBirth && { dateOfBirth: data.dateOfBirth }),
+            industry: data.industry,
+            referralSource: data.referralSource,
+            ...(data.companyName && { companyName: data.companyName }),
+            ...(data.companySize && { companySize: data.companySize }),
+            selectedPlan: data.selectedPlan,
+            stripeCustomerId: customerId, // Store the Stripe customer ID
+          };
+          
+          await completeOnboarding(profileData);
+          navigate('/dashboard');
+        }
       } catch (error) {
         console.error('Error completing onboarding:', error);
         setErrors({ submit: 'Failed to complete onboarding. Please try again.' });

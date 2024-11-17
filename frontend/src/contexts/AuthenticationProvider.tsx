@@ -32,11 +32,12 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [authState, setAuthState] = useState<AuthState>({ 
     status: AuthStatus.LOADING,
-    user: null
+    user: null,
   });
 
+
   useEffect(() => {
-    const unsubscribe = FirebaseAuthService.onAuthStateChanged(firebaseUser => {
+    const unsubscribe = FirebaseAuthService.onAuthStateChanged(async firebaseUser => {
       if (firebaseUser) {
         setAuthState({
           status: AuthStatus.AUTHENTICATED,
@@ -44,12 +45,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             uid: firebaseUser.uid, 
             name: firebaseUser.name || '', 
             email: firebaseUser.email || '' 
-          }
+          },
         });
       } else {
         setAuthState({ 
           status: AuthStatus.UNAUTHENTICATED,
-          user: null
+          user: null,
         });
       }
     });

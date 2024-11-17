@@ -1,7 +1,12 @@
 import { Stripe } from 'stripe';
 
-export type SuccessCallback<T> = (result: T) => void;
+export type SuccessCallback<T> = (data: T) => void;
 export type FailureCallback = (error: Error) => void;
+
+export interface CheckoutSessionMetadata {
+  userId: string;
+  planType: string;
+}
 
 export interface PaymentService {
   createCustomer(
@@ -15,6 +20,7 @@ export interface PaymentService {
     stripeCustomerId: string,
     successUrl: string,
     cancelUrl: string,
+    metadata: CheckoutSessionMetadata,
     onSuccess?: SuccessCallback<string>,
     onFailure?: FailureCallback
   ): Promise<void>;
@@ -31,7 +37,7 @@ export interface PaymentService {
     event: object,
     signature: string,
     secret: string
-  ): void;
+  ): Stripe.Event;
 
   createSubscription(
     customerId: string,
@@ -49,6 +55,37 @@ export interface PaymentService {
   createSetupIntent(
     customerId: string,
     onSuccess?: SuccessCallback<string>,
+    onFailure?: FailureCallback
+  ): Promise<void>;
+
+  getCustomerSubscriptions(
+    customerId: string,
+    onSuccess?: SuccessCallback<Stripe.Subscription[]>,
+    onFailure?: FailureCallback
+  ): Promise<void>;
+
+  updateSubscription(
+    subscriptionId: string,
+    data: Stripe.SubscriptionUpdateParams,
+    onSuccess?: SuccessCallback<Stripe.Subscription>,
+    onFailure?: FailureCallback
+  ): Promise<void>;
+
+  cancelSubscription(
+    subscriptionId: string,
+    onSuccess?: SuccessCallback<Stripe.Subscription>,
+    onFailure?: FailureCallback
+  ): Promise<void>;
+
+  retrieveSubscription(
+    subscriptionId: string,
+    onSuccess?: SuccessCallback<Stripe.Subscription>,
+    onFailure?: FailureCallback
+  ): Promise<void>;
+
+  retrieveCheckoutSession(
+    sessionId: string,
+    onSuccess?: SuccessCallback<Stripe.Checkout.Session>,
     onFailure?: FailureCallback
   ): Promise<void>;
 }

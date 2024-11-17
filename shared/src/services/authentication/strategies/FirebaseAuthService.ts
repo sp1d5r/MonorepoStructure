@@ -16,14 +16,20 @@ import { User } from '../../../types/User';
 
 const auth = getAuth(app);
 
+const mapFirebaseUserToUser = async (firebaseUser: FirebaseUser): Promise<User> => {
+  const token = await firebaseUser.getIdToken();
+  return {
+    uid: firebaseUser.uid,
+    name: firebaseUser.displayName || '',
+    email: firebaseUser.email || '',
+    token,
+  };
+};
+
 const FirebaseAuthService: AuthService = {
   async login(email: string, password: string) {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    return {
-      uid: userCredential.user.uid,
-      name: userCredential.user.displayName || '',
-      email: userCredential.user.email || '',
-    };
+    return mapFirebaseUserToUser(userCredential.user);
   },
 
   async register(email: string, name: string, password: string) {
@@ -33,11 +39,7 @@ const FirebaseAuthService: AuthService = {
         displayName: name,
       });
     }
-    return {
-      uid: userCredential.user.uid,
-      name: userCredential.user.displayName || '',
-      email: userCredential.user.email || '',
-    };
+    return mapFirebaseUserToUser(userCredential.user);
   },
 
   async logout() {
@@ -45,13 +47,10 @@ const FirebaseAuthService: AuthService = {
   },
 
   onAuthStateChanged(callback: (user: User | null) => void) {
-    return onAuthStateChanged(auth, (firebaseUser: FirebaseUser | null) => {
+    return onAuthStateChanged(auth, async (firebaseUser: FirebaseUser | null) => {
       if (firebaseUser) {
-        callback({
-          uid: firebaseUser.uid,
-          name: firebaseUser.displayName || '',
-          email: firebaseUser.email || '',
-        });
+        const user = await mapFirebaseUserToUser(firebaseUser);
+        callback(user);
       } else {
         callback(null);
       }
@@ -61,15 +60,23 @@ const FirebaseAuthService: AuthService = {
   async loginWithGoogle() {
     const provider = new GoogleAuthProvider();
     const userCredential = await signInWithPopup(auth, provider);
-    return {
-      uid: userCredential.user.uid,
-      name: userCredential.user.displayName || '',
-      email: userCredential.user.email || '',
-    };
+    return mapFirebaseUserToUser(userCredential.user);
   },
 
   async resetPassword(email: string) {
     await sendPasswordResetEmail(auth, email);
+  },
+
+  async getToken(): Promise<string | null> {
+    const currentUser = auth.currentUser;
+    if (!currentUser) return null;
+    return currentUser.getIdToken();
+  },
+
+  async refreshToken(): Promise<string | null> {
+    const currentUser = auth.currentUser;
+    if (!currentUser) return null;
+    return currentUser.getIdToken(true); // Force refresh the token
   },
 };
 

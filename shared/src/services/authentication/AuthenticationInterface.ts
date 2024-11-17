@@ -7,6 +7,8 @@ export interface AuthService {
     register(email: string, password: string, name: string): Promise<User | null>;
     onAuthStateChanged(callback: (user: User | null) => void): () => void;
     resetPassword(email: string): Promise<void>;
-}
+    getToken(): Promise<string | null>;
+    refreshToken(): Promise<string | null>;
+  }
 
 export default AuthService;

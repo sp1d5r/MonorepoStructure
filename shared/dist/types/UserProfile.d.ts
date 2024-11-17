@@ -7,4 +7,8 @@ export default interface UserProfile {
     companyName?: string;
     companySize?: string;
     selectedPlan?: 'free' | 'pro' | 'enterprise';
+    stripeCustomerId?: string;
+    subscriptionStatus?: 'active' | 'canceled' | 'past_due' | 'incomplete' | 'trialing' | 'none';
+    subscriptionId?: string;
+    currentPeriodEnd?: string;
 }

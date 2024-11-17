@@ -4,5 +4,6 @@ export interface Plan {
     price: string;
     description: string;
     features: string[];
+    stripePriceId?: string;
 }
 export declare const PRICING_PLANS: Plan[];

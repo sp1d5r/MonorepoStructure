@@ -49,7 +49,8 @@ export const ProfileProvider: React.FC<{ children: ReactNode }> = ({ children })
             }
           );
           break;
-        case AuthStatus.UNAUTHENTICATED: 
+        case AuthStatus.UNAUTHENTICATED:
+          setStatus(ProfileStatus.NO_PROFILE);
           break;
         case AuthStatus.LOADING:
           break;

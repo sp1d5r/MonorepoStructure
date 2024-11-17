@@ -17,19 +17,74 @@ import {
   X,
   Check,
   Crown,
-  Zap
+  Zap,
+  CircleDashed
 } from 'lucide-react';
-import { PRICING_PLANS } from '@my-monorepo/shared/dist/types/Plans';
+import { Plan, PRICING_PLANS } from '@my-monorepo/shared/dist/types/Plans';
 import UserProfile from '@my-monorepo/shared/dist/types/UserProfile';
 import { useProfile } from '../../../contexts/ProfileProvider';
+import { useApi } from '../../../contexts/ApiContext';
 
 const DashboardProfile = () => {
   const { toast } = useToast();
   const [isEditing, setIsEditing] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const {profile} = useProfile();
+  const {fetchWithAuth} = useApi();
 
   const [editedData, setEditedData] = useState<UserProfile>(profile!);
+
+  const handleUpgrade = async (plan: Plan) => {
+    if (plan.type === 'free') {
+      // Handle downgrade to free plan
+      // You might want to show a confirmation modal
+      return;
+    }
+
+    if (plan.type === 'enterprise') {
+      // Redirect to contact sales page or show contact form
+      window.location.href = '/contact-sales';
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+
+      // Create checkout session
+      const response = await fetchWithAuth('api/payments/create-checkout-session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          priceId: plan.stripePriceId,
+          customerId: profile?.stripeCustomerId,
+          successUrl: `${window.location.origin}/dashboard?session_id={CHECKOUT_SESSION_ID}`,
+          cancelUrl: `${window.location.origin}/dashboard`,
+        }),
+      });
+
+      console.log("Response:", response);
+      if (!response.ok) {
+        throw new Error('Failed to create checkout session');
+      }
+
+      const { url } = await response.json();
+      
+      // Redirect to Stripe Checkout
+      window.location.href = url;
+    } catch (error) {
+      console.error('Error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to process upgrade. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const getCurrentPlan = () => {
     return PRICING_PLANS.find(plan => plan.type === profile!.selectedPlan) || PRICING_PLANS[0];
@@ -166,18 +221,34 @@ const DashboardProfile = () => {
           <CardTitle className="text-xl font-semibold">Subscription</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="font-medium">Current Plan: {currentPlan.name}</h3>
-                <p className="text-sm text-gray-500">{currentPlan.price}</p>
-                <p className="text-sm text-gray-500">{currentPlan.description}</p>
-              </div>
-              <Button onClick={() => setShowUpgradeModal(true)}>
-                <CreditCard className="w-4 h-4 mr-2" />
-                Change Plan
-              </Button>
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="font-medium">Current Plan: {currentPlan.name}</h3>
+              <p className="text-sm text-gray-500">{currentPlan.price}</p>
+              {profile?.subscriptionStatus && (
+                <p className="text-sm text-gray-500">
+                  Status: {profile.subscriptionStatus}
+                </p>
+              )}
+              {profile?.currentPeriodEnd && (
+                <p className="text-sm text-gray-500">
+                  Renews: {new Date(profile.currentPeriodEnd).toLocaleDateString()}
+                </p>
+              )}
             </div>
+            <Button 
+              onClick={() => setShowUpgradeModal(true)}
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <CircleDashed className="w-4 h-4 mr-2" />
+              ) : (
+                <CreditCard className="w-4 h-4 mr-2" />
+              )}
+              Change Plan
+            </Button>
+          </div>
             <div className="mt-4">
               <h4 className="font-medium mb-2">Plan Features:</h4>
               <ul className="space-y-2">
@@ -242,15 +313,11 @@ const DashboardProfile = () => {
                   <Button 
                     className="w-full mt-4"
                     variant={profile!.selectedPlan === plan.type ? "outline" : "default"}
-                    onClick={() => {
-                      setShowUpgradeModal(false);
-                      toast({
-                        title: "Subscription Updated",
-                        description: `You are now subscribed to the ${plan.name} plan.`,
-                      });
-                    }}
+                    onClick={() => handleUpgrade(plan)}
                   >
-                    {profile!.selectedPlan === plan.type ? (
+                    {isLoading ? (
+                      <CircleDashed className="w-4 h-4 mr-2" />
+                    ) : profile!.selectedPlan === plan.type ? (
                       <>
                         <Crown className="w-4 h-4 mr-2" />
                         Current Plan

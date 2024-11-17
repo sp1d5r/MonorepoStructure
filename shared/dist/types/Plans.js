@@ -19,6 +19,7 @@ exports.PRICING_PLANS = [
         name: 'Pro',
         price: '$29/mo',
         description: 'For growing businesses',
+        stripePriceId: 'price_1QM7h5GME0Qq6U11b4JKWfFy',
         features: [
             'Advanced Features',
             'Unlimited Users',

@@ -16,6 +16,7 @@ import { DashboardMain } from "../components/page-components/dashboard/Dashboard
 import { AuthStatus, useAuth } from "../contexts/AuthenticationProvider";
 import { ProfileStatus, useProfile } from "../contexts/ProfileProvider";
 import DashboardProfile from "../components/page-components/dashboard/DashboardProfile";
+import { useToast } from "../contexts/ToastProvider";
 
 const Dashboard: React.FC = () => {
   const [open, setOpen] = useState(false);
@@ -25,6 +26,21 @@ const Dashboard: React.FC = () => {
   const [activeContent, setActiveContent] = useState<string>("home");
   const { authState, logout } = useAuth();
   const { status: profileStatus, profile} = useProfile();
+  const {toast} = useToast();
+
+  useEffect(() => {
+    const sessionId = new URLSearchParams(window.location.search).get('session_id');
+    
+    if (sessionId) {
+      // Clear the URL parameter
+      window.history.replaceState({}, '', '/dashboard');
+      // Show success message
+      toast({
+        title: "Subscription Updated",
+        description: "Your subscription has been updated successfully.",
+      });
+    }
+  }, []);
 
   useEffect(() => {
     const content = searchParams.get("content");
@@ -43,6 +59,7 @@ const Dashboard: React.FC = () => {
           break;
         case AuthStatus.AUTHENTICATED:
           // Check profile status when authenticated
+          console.log("Profile status:", authState.user);
           switch (profileStatus) {
             case ProfileStatus.NO_PROFILE:
             case ProfileStatus.NEEDS_ONBOARDING:

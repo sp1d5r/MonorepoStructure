@@ -4,6 +4,7 @@ export interface Plan {
     price: string;
     description: string;
     features: string[];
+    stripePriceId?: string;
 }
 
 export const PRICING_PLANS: Plan[] = [
@@ -24,6 +25,7 @@ export const PRICING_PLANS: Plan[] = [
       name: 'Pro',
       price: '$29/mo',
       description: 'For growing businesses',
+      stripePriceId: 'price_1QM7h5GME0Qq6U11b4JKWfFy',
       features: [
         'Advanced Features',
         'Unlimited Users',

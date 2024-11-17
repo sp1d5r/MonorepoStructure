@@ -15,15 +15,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const auth_1 = require("firebase/auth");
 const firebaseConfig_1 = __importDefault(require("../../../config/firebaseConfig"));
 const auth = (0, auth_1.getAuth)(firebaseConfig_1.default);
+const mapFirebaseUserToUser = (firebaseUser) => __awaiter(void 0, void 0, void 0, function* () {
+    const token = yield firebaseUser.getIdToken();
+    return {
+        uid: firebaseUser.uid,
+        name: firebaseUser.displayName || '',
+        email: firebaseUser.email || '',
+        token,
+    };
+});
 const FirebaseAuthService = {
     login(email, password) {
         return __awaiter(this, void 0, void 0, function* () {
             const userCredential = yield (0, auth_1.signInWithEmailAndPassword)(auth, email, password);
-            return {
-                uid: userCredential.user.uid,
-                name: userCredential.user.displayName || '',
-                email: userCredential.user.email || '',
-            };
+            return mapFirebaseUserToUser(userCredential.user);
         });
     },
     register(email, name, password) {
@@ -34,11 +39,7 @@ const FirebaseAuthService = {
                     displayName: name,
                 });
             }
-            return {
-                uid: userCredential.user.uid,
-                name: userCredential.user.displayName || '',
-                email: userCredential.user.email || '',
-            };
+            return mapFirebaseUserToUser(userCredential.user);
         });
     },
     logout() {
@@ -47,33 +48,42 @@ const FirebaseAuthService = {
         });
     },
     onAuthStateChanged(callback) {
-        return (0, auth_1.onAuthStateChanged)(auth, (firebaseUser) => {
+        return (0, auth_1.onAuthStateChanged)(auth, (firebaseUser) => __awaiter(this, void 0, void 0, function* () {
             if (firebaseUser) {
-                callback({
-                    uid: firebaseUser.uid,
-                    name: firebaseUser.displayName || '',
-                    email: firebaseUser.email || '',
-                });
+                const user = yield mapFirebaseUserToUser(firebaseUser);
+                callback(user);
             }
             else {
                 callback(null);
             }
-        });
+        }));
     },
     loginWithGoogle() {
         return __awaiter(this, void 0, void 0, function* () {
             const provider = new auth_1.GoogleAuthProvider();
             const userCredential = yield (0, auth_1.signInWithPopup)(auth, provider);
-            return {
-                uid: userCredential.user.uid,
-                name: userCredential.user.displayName || '',
-                email: userCredential.user.email || '',
-            };
+            return mapFirebaseUserToUser(userCredential.user);
         });
     },
     resetPassword(email) {
         return __awaiter(this, void 0, void 0, function* () {
             yield (0, auth_1.sendPasswordResetEmail)(auth, email);
+        });
+    },
+    getToken() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const currentUser = auth.currentUser;
+            if (!currentUser)
+                return null;
+            return currentUser.getIdToken();
+        });
+    },
+    refreshToken() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const currentUser = auth.currentUser;
+            if (!currentUser)
+                return null;
+            return currentUser.getIdToken(true);
         });
     },
 };
