@@ -1,6 +1,7 @@
 import pulumi
 import pulumi_aws as aws
 import json
+import boto3
 
 class LambdaService:
     def __init__(self, 
@@ -11,17 +12,41 @@ class LambdaService:
                  timeout: int = 30):
         
         self.name = name
-        image_tag = image_tag or 'latest'
 
         # Create ECR Repository
         self.ecr_repository = aws.ecr.Repository(f"{name}-repository",
             name=name,
-            force_delete=True,  # Allows deletion of the repository even if it contains images
+            force_delete=True,
             image_scanning_configuration={
-                "scanOnPush": True  # Enable security scanning
+                "scanOnPush": True
             }
         )
-        
+
+        def get_latest_version_tag():
+            """Get latest version tag from ECR"""
+            client = boto3.client('ecr')
+            try:
+                response = client.describe_images(
+                    repositoryName=name,
+                    filter={'tagStatus': 'TAGGED'}
+                )
+                if not response.get('imageDetails'):
+                    return 'latest'
+
+                sorted_images = sorted(
+                    response['imageDetails'],
+                    key=lambda x: x['imagePushedAt'],
+                    reverse=True
+                )
+
+                for image in sorted_images:
+                    for tag in image.get('imageTags', []):
+                        return tag
+                return 'latest'
+            except Exception as e:
+                print(f"Error getting latest version tag: {e}")
+                return 'latest'
+
         # Get environment variables from SSM
         environment_variables = {}
         if environment_vars:
@@ -59,80 +84,115 @@ class LambdaService:
                 policy_arn="arn:aws:iam::aws:policy/AmazonSSMReadOnlyAccess"
             )
 
-        # Create Lambda function
-        self.function = aws.lambda_.Function(f"{name}-lambda",
-            role=self.role.arn,
-            package_type="Image",
-            image_uri=pulumi.Output.concat(
-                self.ecr_repository.repository_url,
-                ":",
-                image_tag
-            ),
-            timeout=timeout,
-            memory_size=memory,
-            environment={
-                "variables": environment_variables
-            } if environment_variables else None
+        def create_function(args):
+            repository_url = args['repository_url']
+            try:
+                client = boto3.client('ecr')
+                # First check if repository exists and has images
+                response = client.describe_images(
+                    repositoryName=name,
+                    filter={'tagStatus': 'TAGGED'}
+                )
+                
+                # If no images exist, return None
+                if not response.get('imageDetails'):
+                    pulumi.log.info(
+                        f"No tagged images found in ECR repository for {name}. Push images to its URI: {repository_url}")
+                    return None
+
+                latest_tag = get_latest_version_tag()
+                return aws.lambda_.Function(f"{name}-lambda",
+                    role=self.role.arn,
+                    package_type="Image",
+                    image_uri=f"{repository_url}:{latest_tag}",
+                    timeout=timeout,
+                    memory_size=memory,
+                    environment={
+                        "variables": environment_variables
+                    } if environment_variables else None,
+                    opts=pulumi.ResourceOptions(
+                        depends_on=[self.ecr_repository]
+                    )
+                )
+            except client.exceptions.RepositoryNotFoundException:
+                pulumi.log.info(
+                    f"Repository not found for {name}. Push images to its URI: {repository_url}")
+                return None
+            except Exception as e:
+                pulumi.log.error(f"Error creating Lambda function: {e}")
+                return None
+
+        # Create Lambda function with dynamic image check
+        self.function = self.ecr_repository.repository_url.apply(
+            lambda url: create_function({"repository_url": url})
         )
 
-        # Create API Gateway
-        self.api = aws.apigateway.RestApi(f"{name}-api",
-            name=f"{name}-api"
-        )
+        # Only create API Gateway if Lambda function exists
+        def create_api_gateway(function):
+            if function is None:
+                pulumi.log.info(f"Skipping API Gateway creation as Lambda function does not exist yet for {name}")
+                return None
+            
+            # Create API Gateway
+            api = aws.apigateway.RestApi(f"{name}-api",
+                name=f"{name}-api"
+            )
 
-        # Create catch-all proxy resource
-        self.resource = aws.apigateway.Resource(f"{name}-api-resource",
-            rest_api=self.api.id,
-            parent_id=self.api.root_resource_id,
-            path_part="{proxy+}"
-        )
+            # Create catch-all proxy resource
+            resource = aws.apigateway.Resource(f"{name}-api-resource",
+                rest_api=api.id,
+                parent_id=api.root_resource_id,
+                path_part="{proxy+}"
+            )
 
-        # Setup ANY method
-        self.method = aws.apigateway.Method(f"{name}-api-method",
-            rest_api=self.api.id,
-            resource_id=self.resource.id,
-            http_method="ANY",
-            authorization="NONE",
-            request_parameters={
-                "method.request.path.proxy": True
-            }
-        )
+            # Setup ANY method
+            method = aws.apigateway.Method(f"{name}-api-method",
+                rest_api=api.id,
+                resource_id=resource.id,
+                http_method="ANY",
+                authorization="NONE",
+                request_parameters={
+                    "method.request.path.proxy": True
+                }
+            )
 
-        # Setup integration
-        self.integration = aws.apigateway.Integration(f"{name}-api-integration",
-            rest_api=self.api.id,
-            resource_id=self.resource.id,
-            http_method=self.method.http_method,
-            integration_http_method="POST",
-            type="AWS_PROXY",
-            uri=self.function.invoke_arn
-        )
+            # Setup integration
+            integration = aws.apigateway.Integration(f"{name}-api-integration",
+                rest_api=api.id,
+                resource_id=resource.id,
+                http_method=method.http_method,
+                integration_http_method="POST",
+                type="AWS_PROXY",
+                uri=function.invoke_arn
+            )
 
-        # Deploy API
-        self.deployment = aws.apigateway.Deployment(f"{name}-api-deployment",
-            rest_api=self.api.id,
-            opts=pulumi.ResourceOptions(depends_on=[self.integration])
-        )
+            # Deploy API
+            deployment = aws.apigateway.Deployment(f"{name}-api-deployment",
+                rest_api=api.id,
+                opts=pulumi.ResourceOptions(depends_on=[integration])
+            )
 
-        self.stage = aws.apigateway.Stage(f"{name}-api-stage",
-            rest_api=self.api.id,
-            deployment=self.deployment.id,
-            stage_name="prod"
-        )
+            stage = aws.apigateway.Stage(f"{name}-api-stage",
+                rest_api=api.id,
+                deployment=deployment.id,
+                stage_name="prod"
+            )
 
-        # Allow API Gateway to invoke Lambda
-        aws.lambda_.Permission(f"{name}-api-lambda-permission",
-            action="lambda:InvokeFunction",
-            function=self.function.name,
-            principal="apigateway.amazonaws.com",
-            source_arn=self.api.execution_arn.apply(lambda arn: f"{arn}/*/*")
-        )
+            # Allow API Gateway to invoke Lambda
+            aws.lambda_.Permission(f"{name}-api-lambda-permission",
+                action="lambda:InvokeFunction",
+                function=function.name,
+                principal="apigateway.amazonaws.com",
+                source_arn=api.execution_arn.apply(lambda arn: f"{arn}/*/*")
+            )
 
-        # Export the URL
-        self.url = self.stage.invoke_url
+            return stage.invoke_url
+
+        # Create API Gateway conditionally
+        self.url = self.function.apply(create_api_gateway)
 
     def get_url(self) -> str:
-        return self.url
+        return self.url if self.url else ""
 
     def get_ecr_repository_url(self) -> str:
         return self.ecr_repository.repository_url
