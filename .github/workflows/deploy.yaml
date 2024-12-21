@@ -50,18 +50,6 @@ jobs:
         with:
           version: 8
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'pnpm'
-
-      - name: Install and build backend
-        working-directory: ./backend
-        run: |
-          pnpm install
-          pnpm run build
-
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
