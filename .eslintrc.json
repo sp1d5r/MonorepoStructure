@@ -78,6 +78,24 @@
       },
       {
         "files": ["shared/src/**/*.ts"]
+      },
+      {
+        "files": ["infra/src/**/*.ts", "infra/index.ts"],
+        "rules": {
+          "no-console": "off",
+          "@typescript-eslint/no-explicit-any": "off",
+          "@typescript-eslint/no-non-null-assertion": "off",
+          "@typescript-eslint/no-unused-vars": [
+            "error",
+            {
+              "argsIgnorePattern": "^_",
+              "varsIgnorePattern": "^_",
+              "caughtErrorsIgnorePattern": "^_",
+              "ignoreRestSiblings": true,
+              "args": "none"
+            }
+          ]
+        }
       }
     ]
   }
