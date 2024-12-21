@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
-import Article from "@my-monorepo/shared/dist/types/Article";
+import {Article} from "shared";
 import ScrollableLayout from "../layouts/ScrollableLayout";
 import { useApi } from "../contexts/ApiContext";
 

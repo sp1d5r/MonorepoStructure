@@ -20,8 +20,7 @@ import {
   Zap,
   CircleDashed
 } from 'lucide-react';
-import { Plan, PRICING_PLANS } from '@my-monorepo/shared/dist/types/Plans';
-import UserProfile from '@my-monorepo/shared/dist/types/UserProfile';
+import {UserProfile,  Plan, PRICING_PLANS} from 'shared';
 import { useProfile } from '../../../contexts/ProfileProvider';
 import { useApi } from '../../../contexts/ApiContext';
 

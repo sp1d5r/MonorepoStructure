@@ -1,7 +1,7 @@
 import React from 'react';
 import { Input } from '../../shadcn/input';
 import { Calendar, Phone, User } from 'lucide-react';
-import UserProfile from '@my-monorepo/shared/dist/types/UserProfile';
+import { UserProfile } from 'shared';
 import { FormField } from '../../ui/FormField';
 
 interface PersonalStepProps {

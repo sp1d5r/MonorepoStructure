@@ -10,7 +10,7 @@ import WelcomeStep from '../components/page-components/onboarding/WelcomeStep';
 import PersonalStep from '../components/page-components/onboarding/PersonalStep';
 import CompanyStep from '../components/page-components/onboarding/CompanyStep';
 import PlanStep from '../components/page-components/onboarding/PricingStep';
-import UserProfile from '@my-monorepo/shared/dist/types/UserProfile';
+import { UserProfile } from 'shared';
 import { useApi } from '../contexts/ApiContext';
 
 const OnboardingFlow: React.FC = () => {
@@ -19,7 +19,7 @@ const OnboardingFlow: React.FC = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const { apiUrl, fetchWithAuth } = useApi();
+  const { fetchWithAuth } = useApi();
 
   useEffect(() => {
     if (!authState) return;

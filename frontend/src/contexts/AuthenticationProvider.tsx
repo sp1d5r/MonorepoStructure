@@ -1,7 +1,6 @@
 import React, { createContext, useContext, ReactNode, useState, useEffect } from 'react';
-import { User } from "@my-monorepo/shared/dist/types/User";
 import firebase from "firebase/compat";
-import FirebaseAuthService from "@my-monorepo/shared/dist/services/authentication/strategies/FirebaseAuthService";
+import { FirebaseAuthService, User } from "shared";
 
 export enum AuthStatus {
   LOADING = 'LOADING',

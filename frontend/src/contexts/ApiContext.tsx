@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useCallback, useState } from 'react';
 import { useAuth } from './AuthenticationProvider';
-import FirebaseAuthService from '@my-monorepo/shared/dist/services/authentication/strategies/FirebaseAuthService';
+import {FirebaseAuthService} from 'shared';
 
 interface ApiContextType {
   fetchWithAuth: (endpoint: string, options?: RequestInit) => Promise<Response>;
@@ -12,7 +12,7 @@ const ApiContext = createContext<ApiContextType | undefined>(undefined);
 
 export const ApiProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { authState } = useAuth();
-  const [apiUrl, setApiUrl] = useState<string>(process.env.REACT_APP_API_URL || 'http://localhost:3001');
+  const [apiUrl, setApiUrl] = useState<string>(import.meta.env.VITE_API_URL || 'http://localhost:3001');
 
   const fetchWithAuth = useCallback(async (endpoint: string, options: RequestInit = {}) => {
     const headers = new Headers(options.headers || {});

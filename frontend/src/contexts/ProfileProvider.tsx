@@ -1,6 +1,5 @@
 import React, { createContext, useContext, ReactNode, useState, useEffect } from 'react';
-import FirebaseDatabaseService from '@my-monorepo/shared/dist/services/database/strategies/FirebaseFirestoreService';
-import UserProfile from '@my-monorepo/shared/dist/types/UserProfile';
+import {FirebaseDatabaseService, UserProfile} from 'shared';
 import { AuthStatus, useAuth } from './AuthenticationProvider';
 
 export enum ProfileStatus {

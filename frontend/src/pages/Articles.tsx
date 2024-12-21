@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ScrollableLayout from "../layouts/ScrollableLayout";
-import Article from "@my-monorepo/shared/dist/types/Article";
+import {Article} from "shared";
 import { useApi } from "../contexts/ApiContext";
 import { Link } from "react-router-dom";
 
