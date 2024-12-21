@@ -6,7 +6,7 @@ export class StripePaymentService implements PaymentService {
 
   constructor(private apiKey: string) {
     this.stripe = new Stripe(apiKey, {
-      apiVersion: '2024-09-30.acacia',
+      apiVersion: '2024-11-20.acacia',
     });
   }
 

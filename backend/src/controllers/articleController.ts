@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { Client } from '@notionhq/client';
 import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 import { NotionToMarkdown } from "notion-to-md";
-import Article from '@my-monorepo/shared/dist/types/Article';
+import {Article} from 'shared';
 import {config} from 'dotenv';
 
 config();

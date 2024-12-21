@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { PaymentService } from '../services/payments/PaymentsService';
-import FirebaseDatabaseService from '@my-monorepo/shared/dist/services/database/strategies/FirebaseFirestoreService';
+import {FirebaseDatabaseService} from 'shared';
 import Stripe from 'stripe';
 
 export const handleWebhook = async (req: Request, res: Response) => {
