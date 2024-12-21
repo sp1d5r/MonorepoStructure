@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue 
 } from '../../shadcn/select';
-import UserProfile from 'shared/src/types/UserProfile';
+import {UserProfile} from 'shared';
 import { FormField } from '../../ui/FormField';
 import { 
   INDUSTRY_OPTIONS, 

@@ -32,7 +32,7 @@ export const ProfileProvider: React.FC<{ children: ReactNode }> = ({ children })
         case AuthStatus.AUTHENTICATED:
           unsubscribe = FirebaseDatabaseService.listenToDocument<UserProfile>(
             'users',
-            authState.user!.uid,
+            authState.user?.uid || '',
             (data) => {
               if (data) {
                 setProfile(data);
