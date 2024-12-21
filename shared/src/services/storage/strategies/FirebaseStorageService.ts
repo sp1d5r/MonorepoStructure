@@ -2,10 +2,17 @@
 import {
   getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject,
 } from 'firebase/storage';
-import app from '../../../config/firebaseConfig';
+import { getFirebaseApp } from '../../../config/firebaseConfig';
 import { StorageService } from '../StorageInterface';
 
-const storage = getStorage(app);
+let storageInstance: ReturnType<typeof getStorage> | null = null;
+
+const getStorageInstance = () => {
+  if (!storageInstance) {
+    storageInstance = getStorage(getFirebaseApp());
+  }
+  return storageInstance;
+};
 
 const FirebaseStorageService: StorageService = {
   async uploadFile(
@@ -13,6 +20,7 @@ const FirebaseStorageService: StorageService = {
     file: File,
     onProgress?: (progress: number) => void,
   ): Promise<string> {
+    const storage = getStorageInstance();
     const storageRef = ref(storage, path);
     const uploadTask = uploadBytesResumable(storageRef, file);
 
@@ -40,6 +48,7 @@ const FirebaseStorageService: StorageService = {
   },
 
   async downloadFile(path: string): Promise<Blob> {
+    const storage = getStorageInstance();
     if (!path) {
       throw new Error('Invalid file path.');
     }
@@ -60,6 +69,7 @@ const FirebaseStorageService: StorageService = {
   },
 
   async getDownloadURL(path: string): Promise<string> {
+    const storage = getStorageInstance();
     if (!path) {
       throw new Error('Path cannot be empty');
     }
@@ -77,6 +87,7 @@ const FirebaseStorageService: StorageService = {
   },
 
   async deleteFile(path: string): Promise<void> {
+    const storage = getStorageInstance();
     const storageRef = ref(storage, path);
     deleteObject(storageRef).then(() => {
       console.log('File deleted successfully');
@@ -86,4 +97,4 @@ const FirebaseStorageService: StorageService = {
   },
 };
 
-export default FirebaseStorageService;
+export { FirebaseStorageService };

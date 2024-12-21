@@ -1,4 +1,4 @@
-export default interface Article {
+export interface Article {
     id: string;
     properties: {
       [key: string]: string | string[] | boolean | undefined | number;

@@ -1,4 +1,4 @@
-export default interface UserProfile {
+export interface UserProfile {
   // User Profile Data
   displayName: string;
   phoneNumber?: string;

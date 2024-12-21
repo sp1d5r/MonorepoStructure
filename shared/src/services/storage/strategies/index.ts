@@ -1,3 +1,3 @@
-import FirebaseStorageService from './FirebaseStorageService';
+import {FirebaseStorageService} from './FirebaseStorageService';
 
-export default FirebaseStorageService;
+export { FirebaseStorageService };

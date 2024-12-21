@@ -1,3 +1,3 @@
-import FirebaseAuthService from './FirebaseAuthService';
+import { FirebaseAuthService } from './FirebaseAuthService';
 
-export default FirebaseAuthService;
+export { FirebaseAuthService };

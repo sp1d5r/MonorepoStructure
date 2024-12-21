@@ -19,12 +19,19 @@ import {
   WhereFilterOp,
   OrderByDirection,
 } from 'firebase/firestore';
-import app from '../../../config/firebaseConfig';
+import { getFirebaseApp } from '../../../config/firebaseConfig';
 import {
   DatabaseService, FailureCallback, Identifiable, SuccessCallback, UpdateCallback,
 } from '../DatabaseInterface';
 
-const db = getFirestore(app);
+let dbInstance: ReturnType<typeof getFirestore> | null = null;
+
+const getDb = () => {
+  if (!dbInstance) {
+    dbInstance = getFirestore(getFirebaseApp());
+  }
+  return dbInstance;
+};
 
 type FilterCondition = {
     field: string;
@@ -43,6 +50,7 @@ const FirebaseDatabaseService: DatabaseService = {
   )
     : Promise<void> {
     try {
+      const db = getDb();
       const safeData: WithFieldValue<DocumentData> = data;
       const docRef = await addDoc(collection(db, collectionPath), safeData);
       if (onSuccess) onSuccess(docRef.id);
@@ -58,6 +66,7 @@ const FirebaseDatabaseService: DatabaseService = {
     onFailure?: FailureCallback,
   ): Promise<void> {
     try {
+      const db = getDb();
       const docRef = doc(db, collectionPath, docId);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
@@ -76,6 +85,7 @@ const FirebaseDatabaseService: DatabaseService = {
     onFailure?: FailureCallback,
   ): Promise<void> {
     try {
+      const db = getDb();
       const docRef = doc(db, collectionPath, docId);
       await setDoc(docRef, data, { merge: true });
       if (onSuccess) onSuccess();
@@ -91,6 +101,7 @@ const FirebaseDatabaseService: DatabaseService = {
     onFailure?: FailureCallback,
   ): Promise<void> {
     try {
+      const db = getDb();
       const docRef = doc(db, collectionPath, docId);
       await deleteDoc(docRef);
       if (onSuccess) onSuccess();
@@ -105,6 +116,7 @@ const FirebaseDatabaseService: DatabaseService = {
     onUpdate: UpdateCallback<T>,
     onError: (error: FirestoreError) => void,
   ): Unsubscribe {
+    const db = getDb();
     const documentRef: DocumentReference = doc(db, collectionPath, docId);
     return onSnapshot(
       documentRef,
@@ -123,6 +135,7 @@ const FirebaseDatabaseService: DatabaseService = {
     onFailure?: FailureCallback,
   ): Promise<string> {
     try {
+      const db = getDb();
       const newDocRef = doc(collection(db, collectionName));
       if (onSuccess) onSuccess(newDocRef.id);
       return Promise.resolve(newDocRef.id);
@@ -139,6 +152,7 @@ const FirebaseDatabaseService: DatabaseService = {
     onFailure?: FailureCallback,
   ): Promise<void> {
     try {
+      const db = getDb();
       const docRef = doc(db, collectionPath, docId);
       const docSnapshot = await getDoc(docRef);
       if (docSnapshot.exists()) {
@@ -161,6 +175,7 @@ const FirebaseDatabaseService: DatabaseService = {
     onFailure?:FailureCallback,
   ): Promise<void> {
     try {
+      const db = getDb();
       const q = query(collection(db, collectionPath), where(queryField, '==', queryValue), orderBy(orderByField));
       const querySnapshot = await getDocs(q);
       const documents: QueryResult<T>[] = [];
@@ -181,6 +196,7 @@ const FirebaseDatabaseService: DatabaseService = {
     onFailure?: FailureCallback,
   ): Promise<void> {
     try {
+      const db = getDb();
       const q = query(collection(db, collectionPath));
       const querySnapshot = await getDocs(q);
       const documents: QueryResult<T>[] = [];
@@ -208,6 +224,7 @@ const FirebaseDatabaseService: DatabaseService = {
     onFailure?: FailureCallback,
   ): Promise<void> {
     try {
+      const db = getDb();
       const collectionRef = collection(db, collectionPath);
       const querySnapshot = await getDocs(collectionRef);
       const documents: QueryResult<T>[] = [];
@@ -230,6 +247,7 @@ const FirebaseDatabaseService: DatabaseService = {
     onUpdate: UpdateCallback<T[]>,
     onError: (error: FirestoreError) => void = (err) => { console.error(err.message); },
   ): Unsubscribe {
+    const db = getDb();
     const q = query(
       collection(db, collectionPath),
       where(queryField, '==', queryValue),
@@ -259,6 +277,7 @@ const FirebaseDatabaseService: DatabaseService = {
     onFailure?: FailureCallback,
   ): Promise<void> {
     try {
+      const db = getDb();
       const collectionRef = collection(db, collectionPath);
 
       // Start building the query
@@ -292,4 +311,4 @@ const FirebaseDatabaseService: DatabaseService = {
 
 };
 
-export default FirebaseDatabaseService;
+export { FirebaseDatabaseService };
