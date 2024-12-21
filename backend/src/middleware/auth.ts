@@ -1,15 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
 import { auth } from '../config/firebase-admin';
 
-declare global {
-  namespace Express {
-    interface Request {
-      user?: {
-        uid: string;
-        email: string;
-        name?: string;
-      };
-    }
+declare module 'express' {
+  interface Request {
+    user?: {
+      uid: string;
+      email: string;
+      name?: string;
+    };
   }
 }
 
