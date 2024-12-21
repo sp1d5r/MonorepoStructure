@@ -7,7 +7,10 @@
     "start": "pnpm --parallel run start",
     "build": "pnpm -r run build",
     "lint": "pnpm -r run lint",
-    "dev": "pnpm --parallel run dev"
+    "dev": "pnpm --parallel run dev",
+    "lint:frontend": "pnpm --filter frontend run lint",
+    "lint:backend": "pnpm --filter backend run lint",
+    "lint:shared": "pnpm --filter shared run lint"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^6.0.0",

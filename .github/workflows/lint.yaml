@@ -11,43 +11,52 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - uses: pnpm/action-setup@v2
+      with:
+        version: 8
     - name: Use Node.js
       uses: actions/setup-node@v3
       with:
         node-version: '18'
+        cache: 'pnpm'
     - name: Install dependencies
       run: |
-        npm install
-        cd frontend && npm install
+        pnpm install
     - name: Run frontend linter
-      run: npm run lint:frontend
+      run: pnpm run lint:frontend
 
   lint-backend:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - uses: pnpm/action-setup@v2
+      with:
+        version: 8
     - name: Use Node.js
       uses: actions/setup-node@v3
       with:
         node-version: '18'
+        cache: 'pnpm'
     - name: Install dependencies
       run: |
-        npm install
-        cd backend && npm install
+        pnpm install
     - name: Run backend linter
-      run: npm run lint:backend
+      run: pnpm run lint:backend
 
   lint-shared:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - uses: pnpm/action-setup@v2
+      with:
+        version: 8
     - name: Use Node.js
       uses: actions/setup-node@v3
       with:
         node-version: '18'
+        cache: 'pnpm'
     - name: Install dependencies
       run: |
-        npm install
-        cd shared && npm install
+        pnpm install
     - name: Run shared linter
-      run: npm run lint:shared
+      run: pnpm run lint:shared

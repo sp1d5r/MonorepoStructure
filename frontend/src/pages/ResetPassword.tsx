@@ -34,7 +34,7 @@ export const ResetPassword: React.FC = () => {
                     <div className="grid gap-2 text-center">
                         <h1 className="text-3xl font-bold dark:text-white">Reset Password</h1>
                         <p className="text-balance text-muted-foreground dark:text-gray-300">
-                            Enter your email address and we'll send you a link to reset your password.
+                            Enter your email address and we&apos;ll send you a link to reset your password.
                         </p>
                     </div>
                     <div className="grid gap-4">
@@ -70,7 +70,7 @@ export const ResetPassword: React.FC = () => {
                         Missing something?
                     </h2>
                     <p className="max-w-xl mx-auto text-sm md:text-lg text-neutral-700 dark:text-neutral-300 text-center">
-                        Forgetting your password is no big deal... Just don't do it again.
+                        Forgetting your password is no big deal... Just don&apos;t do it again.
                     </p>
                 </BackgroundLines>
             </div>
