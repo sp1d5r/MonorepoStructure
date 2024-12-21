@@ -2,6 +2,7 @@
   "name": "my-monorepo",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "start": "pnpm --parallel run start",
     "build": "pnpm -r run build",
